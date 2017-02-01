@@ -11,11 +11,17 @@ namespace UIStuff
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        int width = 1920;
+        int height = 1080;
+        bool fullscreen = false;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = width;
+            graphics.PreferredBackBufferHeight = height;
+            graphics.IsFullScreen = fullscreen;
         }
 
         /// <summary>
