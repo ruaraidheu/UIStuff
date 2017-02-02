@@ -86,11 +86,26 @@ namespace UIStuff
         protected Point calcuedpos;
         protected Size calcuedsize;
         Viewport lview;
+        /// <summary>
+        /// Absolute is in pixels 
+        /// Relative is percentage of the viewport
+        /// Square is the same as relative but the original aspect ratio is maintained
+        /// </summary>
         public enum Positioning
         {
             Absolute, Relative, Square
         }
+        /// <summary>
+        /// Where 0,0 is on the page.
+        /// </summary>
         public enum Origin
+        {
+            TopLeft, TopCenter, TopRight, MiddleLeft, MiddleCenter, MiddleRight, BottomLeft, BottomCenter, BottomRight
+        }
+        /// <summary>
+        /// Where 0,0 is on the object
+        /// </summary>
+        public enum Allignment
         {
             TopLeft, TopCenter, TopRight, MiddleLeft, MiddleCenter, MiddleRight, BottomLeft, BottomCenter, BottomRight
         }
@@ -105,11 +120,6 @@ namespace UIStuff
         {
 
         }
-        /// <summary>
-        /// Must be run befor overriden things. Draws Control
-        /// </summary>
-        /// <param name="sb"></param>
-        /// <param name="v"></param>
         public virtual void Draw(SpriteBatch sb, Viewport v)
         {
             //May be a bit expensive?
@@ -198,6 +208,19 @@ namespace UIStuff
             x = _x;
             y = _y;
         }
+        public Point(Vector2 v)
+        {
+            x = v.X;
+            y = v.Y;
+        }
+        public Vector2 GetVector()
+        {
+            return new Vector2(x, y);
+        }
+        public Rectangle GetRectangle(Size s)
+        {
+            return new Rectangle((int)x, (int)y, (int)s.width, (int)s.height);
+        }
     }
     public struct Size
     {
@@ -212,6 +235,15 @@ namespace UIStuff
             width = v.Width;
             height = v.Height;
         }
+        public Size(Vector2 v)
+        {
+            width = v.X;
+            height = v.Y;
+        }
+        public Vector2 GetVector()
+        {
+            return new Vector2(width, height);
+        }
     }
     class UIImage : UIControl
     {
@@ -223,15 +255,7 @@ namespace UIStuff
         public override void Draw(SpriteBatch sb, Viewport v)
         {
             base.Draw(sb, v);
-            sb.Draw(t, 
-                new Rectangle(
-                    (int)calcuedpos.x, 
-                    (int)calcuedpos.y, 
-                    (int)calcuedsize.width, 
-                    (int)calcuedsize.height
-                ), 
-                Color.White
-            );
+            sb.Draw(t, calcuedpos.GetRectangle(calcuedsize), Color.White);
         }
     }
 }

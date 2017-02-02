@@ -16,7 +16,7 @@ namespace UIStuff
         //TODO: add font scaling
         protected SpriteFont f;
         protected Color c;
-        public UIText(Positioning p, Origin o, Point pos, string txt, SpriteFont font, Color col):base(p, o, pos, new Size(0, 0))
+        public UIText(Positioning p, Origin o, Point pos, string txt, SpriteFont font, Color col):base(p, o, pos, new Size(font.MeasureString(txt)))
         {
             t = txt;
             f = font;
@@ -25,13 +25,7 @@ namespace UIStuff
         public override void Draw(SpriteBatch sb, Viewport v)
         {
             base.Draw(sb, v);
-            sb.DrawString(f, t, 
-                new Vector2(
-                    calcuedpos.x, 
-                    calcuedpos.y
-                ), 
-                c
-            );
+            sb.DrawString(f, t, calcuedpos.GetVector(), c);
         }
     }
 }
