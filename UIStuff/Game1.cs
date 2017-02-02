@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using UIStuff.Code;
 
 namespace UIStuff
 {
@@ -11,11 +12,19 @@ namespace UIStuff
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        int width = 1920;
+        int height = 1080;
+        bool fullscreen = false;
+
+        UIStuff.Code.UIController controller;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = width;
+            graphics.PreferredBackBufferHeight = height;
+            graphics.IsFullScreen = fullscreen;
         }
 
         /// <summary>
@@ -26,7 +35,7 @@ namespace UIStuff
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            controller = new UIController();
 
             base.Initialize();
         }
@@ -40,7 +49,18 @@ namespace UIStuff
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            //Adds a base which contains one control, an image.
+            controller.Add(
+                new UIBase("splash", UIBase.Type.full, 
+                    new UIImage(
+                        UIControl.Positioning.Relative, 
+                        UIControl.Origin.TopLeft, 
+                        new Code.Point(0, 0), 
+                        new Size(100, 100), 
+                        Content.Load<Texture2D>("testimg")
+                    )
+                )
+            );
         }
 
         /// <summary>
@@ -49,7 +69,7 @@ namespace UIStuff
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            
         }
 
         /// <summary>
@@ -62,7 +82,7 @@ namespace UIStuff
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            controller.Update();
 
             base.Update(gameTime);
         }
@@ -75,7 +95,9 @@ namespace UIStuff
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            controller.Draw(spriteBatch, graphics.GraphicsDevice.Viewport);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
