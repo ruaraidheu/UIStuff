@@ -106,16 +106,32 @@ namespace UIStuff.Code
         {
 
         }
+        public Point CalcAlign(Point a)
+        {
+            return a;
+        }
+        public Point CalcPos(Point a)
+        {
+            return a;
+        }
     }
     public struct Point
     {
-        public float x;
-        public float y;
+        public float x, y;
+        public Point(float _x, float _y)
+        {
+            x = _x;
+            y = _y;
+        }
     }
     public struct Size
     {
-        public float width;
-        public float height;
+        public float width, height;
+        public Size(float _width, float _height)
+        {
+            width = _width;
+            height = _height;
+        }
     }
     class UIImage : UIControl
     {
