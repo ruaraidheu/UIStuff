@@ -49,7 +49,7 @@ namespace UIStuff
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            controller.Add(new UIBase("splash"));
+            controller.Add(new UIBase("splash", UIBase.Type.full, new UIControl()));
         }
 
         /// <summary>
