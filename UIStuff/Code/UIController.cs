@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UIStuff.Code
+namespace UIStuff
 {
     class UIController
     {
@@ -83,6 +83,9 @@ namespace UIStuff.Code
         protected Size size;
         protected Positioning p;
         protected Origin o;
+        protected Point calcuedpos;
+        protected Size calcuedsize;
+        Viewport lview;
         public enum Positioning
         {
             Absolute, Relative, Square
@@ -102,9 +105,20 @@ namespace UIStuff.Code
         {
 
         }
+        /// <summary>
+        /// Must be run befor overriden things. Draws Control
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="v"></param>
         public virtual void Draw(SpriteBatch sb, Viewport v)
         {
-
+            //May be a bit expensive?
+            if (!lview.Equals(v))
+            {
+                Size tmp0 = new Size(v);
+                calcuedpos = CalcAlign(CalcPos(pos, tmp0), tmp0);
+                calcuedsize = CalcSize(size, tmp0);
+            }
         }
         public Point CalcAlign(Point a, Size ssize)
         {
@@ -151,13 +165,9 @@ namespace UIStuff.Code
         }
         public Point CalcPos(Point a, Size ssize)
         {
-            if (p == Positioning.Relative)
+            if (p == Positioning.Relative || p == Positioning.Square)
             {
                 return new Point(ssize.width*(a.x/100), ssize.height*(a.y/100));
-            }
-            else if (p == Positioning.Square)
-            {
-                return new Point(ssize.width * (a.x / 100), ssize.width * (a.y / 100));
             }
             else
             {
@@ -169,6 +179,10 @@ namespace UIStuff.Code
             if (p == Positioning.Relative)
             {
                 return new Size(ssize.width * (a.width / 100), ssize.height * (a.height / 100));
+            }
+            else if (p == Positioning.Square)
+            {
+                return new Size(ssize.width * (a.width / 100), ssize.width * (a.height / 100));
             }
             else
             {
@@ -193,6 +207,11 @@ namespace UIStuff.Code
             width = _width;
             height = _height;
         }
+        public Size(Viewport v)
+        {
+            width = v.Width;
+            height = v.Height;
+        }
     }
     class UIImage : UIControl
     {
@@ -203,12 +222,15 @@ namespace UIStuff.Code
         }
         public override void Draw(SpriteBatch sb, Viewport v)
         {
-            //TODO: Optimise, get rid of repitition repitition repitition repitition of calcpos and calcalign
-            sb.Draw(t, new Rectangle(
-                (int)CalcAlign(CalcPos(pos, new Size(v.Width, v.Height)), new Size(v.Width, v.Height)).x, 
-                (int)CalcAlign(CalcPos(pos, new Size(v.Width, v.Height)), new Size(v.Width, v.Height)).y, 
-                (int)CalcSize(size, new Size(v.Width, v.Height)).width, 
-                (int)CalcSize(size, new Size(v.Width, v.Height)).height), Color.White
+            base.Draw(sb, v);
+            sb.Draw(t, 
+                new Rectangle(
+                    (int)calcuedpos.x, 
+                    (int)calcuedpos.y, 
+                    (int)calcuedsize.width, 
+                    (int)calcuedsize.height
+                ), 
+                Color.White
             );
         }
     }

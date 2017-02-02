@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using UIStuff.Code;
+using UIStuff;
 
 namespace UIStuff
 {
@@ -16,7 +16,7 @@ namespace UIStuff
         int height = 1080;
         bool fullscreen = false;
 
-        UIStuff.Code.UIController controller;
+        UIStuff.UIController controller;
 
         public Game1()
         {
@@ -55,14 +55,14 @@ namespace UIStuff
                     new UIImage(
                         UIControl.Positioning.Relative, 
                         UIControl.Origin.TopLeft, 
-                        new Code.Point(0, 0), 
+                        new Point(0, 0), 
                         new Size(100, 100), 
                         Content.Load<Texture2D>("testimg")
                     ),
                     new UIText(
                         UIControl.Positioning.Relative, 
                         UIControl.Origin.TopCenter, 
-                        new Code.Point(-7, 10), 
+                        new Point(-7, 10), 
                         "text that is placed near the top", 
                         Content.Load<SpriteFont>("testfont"), 
                         Color.Red

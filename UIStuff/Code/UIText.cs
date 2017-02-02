@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UIStuff.Code;
+using UIStuff;
 
-namespace UIStuff.Code
+namespace UIStuff
 {
     class UIText : UIControl
     {
@@ -24,8 +24,14 @@ namespace UIStuff.Code
         }
         public override void Draw(SpriteBatch sb, Viewport v)
         {
-            //TODO: fix the overuse of CalcPos
-            sb.DrawString(f, t, new Vector2(CalcAlign(CalcPos(pos, new Size(v.Width, v.Height)), new Size(v.Width, v.Height)).x, CalcAlign(CalcPos(pos, new Size(v.Width, v.Height)), new Size(v.Width, v.Height)).y), c);
+            base.Draw(sb, v);
+            sb.DrawString(f, t, 
+                new Vector2(
+                    calcuedpos.x, 
+                    calcuedpos.y
+                ), 
+                c
+            );
         }
     }
 }
