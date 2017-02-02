@@ -58,7 +58,15 @@ namespace UIStuff
                         new Code.Point(0, 0), 
                         new Size(100, 100), 
                         Content.Load<Texture2D>("testimg")
-                    )
+                    ),
+                    new UIText(
+                        UIControl.Positioning.Relative, 
+                        UIControl.Origin.TopCenter, 
+                        new Code.Point(-7, 10), 
+                        "text that is placed near the top", 
+                        Content.Load<SpriteFont>("testfont"), 
+                        Color.Red
+                    ) 
                 )
             );
         }
