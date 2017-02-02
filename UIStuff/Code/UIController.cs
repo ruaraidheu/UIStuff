@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UIStuff;
 
 namespace UIStuff
 {
@@ -28,33 +29,71 @@ namespace UIStuff
                 if (uib.name == uibase.name)
                 {
                     Console.WriteLine("Name of new UIBase is the same as one already in use: " + uib.name);
+#if DEBUG
+                    throw new Exception("Name of new UIBase is the same as one already in use: " + uib.name);
+#endif
                     return false;
                 }
             }
             list.Add(uib);
             return true;
         }
-        public void Update()
+        public UIBase.Overlaytype Update()
         {
             list[current].Update();
+            return list[current].overlay;
         }
-        public void Draw(SpriteBatch sb, Viewport v)
+        public UIBase.Overlaytype Draw(SpriteBatch sb, Viewport v)
         {
             list[current].Draw(sb, v);
+            return list[current].overlay;
+        }
+        public void Switchto(string s)
+        {
+            int i = 0;
+            bool tmp = false;
+            foreach (UIBase uibase in list)
+            {
+                if (s == uibase.name)
+                {
+                    Switchto(i);
+                    tmp = true;
+                    break;
+                }
+                i++;
+            }
+            if (!tmp)
+            {
+                Console.WriteLine("No menu by that name.");
+#if DEBUG
+                throw new Exception("No menu by that name exists");
+#endif
+            }
+        }
+        public void Switchto(int i)
+        {
+            current = i;
         }
     }
     class UIBase
     {
         public string name { get; private set; }
         List<UIControl> ctrls;
+        public Overlaytype overlay { get; private set; }
         public enum Type
         {
             full, partial
         }
+        //Replace with string or int?
+        public enum Overlaytype
+        {
+            Menu, Game, Paused, Running
+        }
         private Type t;
-        public UIBase(string _name, Type _t, params UIControl[] controls)
+        public UIBase(string _name, Type _t, Overlaytype _overlay, params UIControl[] controls)
         {
             name = _name;
+            overlay = _overlay;
             t = _t;
             ctrls = new List<UIControl>();
             foreach (UIControl control in controls)
