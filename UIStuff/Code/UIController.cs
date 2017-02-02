@@ -38,9 +38,9 @@ namespace UIStuff.Code
         {
             list[current].Update();
         }
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, Viewport v)
         {
-            list[current].Draw(sb);
+            list[current].Draw(sb, v);
         }
     }
     class UIBase
@@ -69,23 +69,23 @@ namespace UIStuff.Code
                 control.Update();
             }
         }
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, Viewport v)
         {
             foreach (UIControl control in ctrls)
             {
-                control.Draw(sb);
+                control.Draw(sb, v);
             }
         }
     }
     class UIControl
     {
-        Point pos;
-        Size size;
-        Positioning p;
-        Origin o;
+        protected Point pos;
+        protected Size size;
+        protected Positioning p;
+        protected Origin o;
         public enum Positioning
         {
-            Absolute, Relative
+            Absolute, Relative, Square
         }
         public enum Origin
         {
@@ -102,17 +102,78 @@ namespace UIStuff.Code
         {
 
         }
-        public virtual void Draw(SpriteBatch sb)
+        public virtual void Draw(SpriteBatch sb, Viewport v)
         {
 
         }
-        public Point CalcAlign(Point a)
+        public Point CalcAlign(Point a, Size ssize)
         {
-            return a;
+            if (o == Origin.TopLeft)
+            {
+                return a;
+            }
+            else if (o == Origin.TopCenter)
+            {
+                return new Point(a.x + (ssize.width/2), a.y);
+            }
+            else if (o == Origin.TopRight)
+            {
+                return new Point(a.x + (ssize.width), a.y);
+            }
+            else if (o == Origin.MiddleLeft)
+            {
+                return new Point(a.x, a.y + (ssize.height / 2));
+            }
+            else if (o == Origin.MiddleCenter)
+            {
+                return new Point(a.x + (ssize.width / 2), a.y + (ssize.height/2));
+            }
+            else if (o == Origin.MiddleRight)
+            {
+                return new Point(a.x + (ssize.width), a.y + (ssize.height / 2));
+            }
+            else if (o == Origin.BottomLeft)
+            {
+                return new Point(a.x, a.y + (ssize.height));
+            }
+            else if (o == Origin.BottomCenter)
+            {
+                return new Point(a.x + (ssize.width / 2), a.y + (ssize.height));
+            }
+            else if (o == Origin.BottomRight)
+            {
+                return new Point(a.x + (ssize.width), a.y + (ssize.height));
+            }
+            else
+            {
+                return a;
+            }
         }
-        public Point CalcPos(Point a)
+        public Point CalcPos(Point a, Size ssize)
         {
-            return a;
+            if (p == Positioning.Relative)
+            {
+                return new Point(ssize.width*(a.x/100), ssize.height*(a.y/100));
+            }
+            else if (p == Positioning.Square)
+            {
+                return new Point(ssize.width * (a.x / 100), ssize.width * (a.y / 100));
+            }
+            else
+            {
+                return a;
+            }
+        }
+        public Size CalcSize(Size a, Size ssize)
+        {
+            if (p == Positioning.Relative)
+            {
+                return new Size(ssize.width * (a.width / 100), ssize.height * (a.height / 100));
+            }
+            else
+            {
+                return a;
+            }
         }
     }
     public struct Point
@@ -135,11 +196,20 @@ namespace UIStuff.Code
     }
     class UIImage : UIControl
     {
-        Texture2D t;
+        protected Texture2D t;
         public UIImage(Positioning p, Origin o, Point pos, Size size, Texture2D img):base(p, o, pos, size)
         {
             t = img;
         }
-
+        public override void Draw(SpriteBatch sb, Viewport v)
+        {
+            //TODO: Optimise, get rid of repitition repitition repitition repitition of calcpos and calcalign
+            sb.Draw(t, new Rectangle(
+                (int)CalcAlign(CalcPos(pos, new Size(v.Width, v.Height)), new Size(v.Width, v.Height)).x, 
+                (int)CalcAlign(CalcPos(pos, new Size(v.Width, v.Height)), new Size(v.Width, v.Height)).y, 
+                (int)CalcSize(size, new Size(v.Width, v.Height)).width, 
+                (int)CalcSize(size, new Size(v.Width, v.Height)).height), Color.White
+            );
+        }
     }
 }

@@ -49,7 +49,18 @@ namespace UIStuff
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            controller.Add(new UIBase("splash", UIBase.Type.full, new UIControl(UIControl.Positioning.Relative, UIControl.Origin.TopLeft, new Code.Point(0, 0), new Size(100, 100))));
+            //Adds a base which contains one control, an image.
+            controller.Add(
+                new UIBase("splash", UIBase.Type.full, 
+                    new UIImage(
+                        UIControl.Positioning.Relative, 
+                        UIControl.Origin.TopLeft, 
+                        new Code.Point(0, 0), 
+                        new Size(100, 100), 
+                        Content.Load<Texture2D>("testimg")
+                    )
+                )
+            );
         }
 
         /// <summary>
@@ -84,7 +95,9 @@ namespace UIStuff
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            controller.Draw(spriteBatch);
+            spriteBatch.Begin();
+            controller.Draw(spriteBatch, graphics.GraphicsDevice.Viewport);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
