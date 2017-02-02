@@ -51,22 +51,32 @@ namespace UIStuff
 
             //Adds a base which contains one control, an image.
             controller.Add(
-                new UIBase("splash", UIBase.Type.full, 
+                new UIBase("splash", UIBase.Type.full,
                     new UIImage(
-                        UIControl.Positioning.Relative, 
-                        UIControl.Origin.TopLeft, 
-                        new Point(0, 0), 
-                        new Size(100, 100), 
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.TopLeft,
+                        UIControl.Alignment.TopLeft,
+                        new Point(0, 0),
+                        new Size(100, 100),
                         Content.Load<Texture2D>("testimg")
                     ),
                     new UIText(
-                        UIControl.Positioning.Relative, 
-                        UIControl.Origin.TopCenter, 
-                        new Point(-7, 10), 
-                        "text that is placed near the top", 
-                        Content.Load<SpriteFont>("testfont"), 
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.TopCenter,
+                        UIControl.Alignment.MiddleCenter,
+                        new Point(0, 10),
+                        "text that is placed near the top",
+                        Content.Load<SpriteFont>("testfont"),
                         Color.Red
-                    ) 
+                    ),
+                    new UIImage(
+                        UIControl.Positioning.Square,
+                        UIControl.Origin.BottomRight,
+                        UIControl.Alignment.BottomRight,
+                        new Point(0, 0),
+                        new Size(25),
+                        Content.Load<Texture2D>("testimg")
+                    )
                 )
             );
         }
@@ -77,7 +87,7 @@ namespace UIStuff
         /// </summary>
         protected override void UnloadContent()
         {
-            
+
         }
 
         /// <summary>

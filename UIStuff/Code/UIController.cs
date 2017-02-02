@@ -27,7 +27,7 @@ namespace UIStuff
             {
                 if (uib.name == uibase.name)
                 {
-                    Console.WriteLine("Name of new UIBase is the same as one already in use: "+uib.name);
+                    Console.WriteLine("Name of new UIBase is the same as one already in use: " + uib.name);
                     return false;
                 }
             }
@@ -83,8 +83,10 @@ namespace UIStuff
         protected Size size;
         protected Positioning p;
         protected Origin o;
+        protected Alignment al;
         protected Point calcuedpos;
         protected Size calcuedsize;
+        protected bool calcsize = true;
         Viewport lview;
         /// <summary>
         /// Absolute is in pixels 
@@ -105,16 +107,17 @@ namespace UIStuff
         /// <summary>
         /// Where 0,0 is on the object
         /// </summary>
-        public enum Allignment
+        public enum Alignment
         {
             TopLeft, TopCenter, TopRight, MiddleLeft, MiddleCenter, MiddleRight, BottomLeft, BottomCenter, BottomRight
         }
-        public UIControl(Positioning _p, Origin _o, Point _pos, Size _size)
+        public UIControl(Positioning _p, Origin _o, Alignment _al, Point _pos, Size _size)
         {
             pos = _pos;
             size = _size;
             p = _p;
             o = _o;
+            al = _al;
         }
         public virtual void Update()
         {
@@ -125,59 +128,111 @@ namespace UIStuff
             //May be a bit expensive?
             if (!lview.Equals(v))
             {
+                lview = v;
                 Size tmp0 = new Size(v);
-                calcuedpos = CalcAlign(CalcPos(pos, tmp0), tmp0);
-                calcuedsize = CalcSize(size, tmp0);
+                if (calcsize)
+                {
+                    calcuedsize = CalcSize(size, tmp0);
+                }
+                else
+                {
+                    calcuedsize = size;
+                }
+                calcuedpos = CalcOrigin(CalcPos(pos, tmp0), calcuedsize, tmp0);
             }
         }
-        public Point CalcAlign(Point a, Size ssize)
+        public Point CalcOrigin(Point a, Size s, Size ssize)
         {
+            Point tmp0 = CalcAlign(s);
             if (o == Origin.TopLeft)
             {
-                return a;
+                return new Point(a.x - tmp0.x, a.y - tmp0.y);
             }
             else if (o == Origin.TopCenter)
             {
-                return new Point(a.x + (ssize.width/2), a.y);
+                return new Point(a.x + (ssize.width / 2) - tmp0.x, a.y - tmp0.y);
             }
             else if (o == Origin.TopRight)
             {
-                return new Point(a.x + (ssize.width), a.y);
+                return new Point(a.x + (ssize.width) - tmp0.x, a.y - tmp0.y);
             }
             else if (o == Origin.MiddleLeft)
             {
-                return new Point(a.x, a.y + (ssize.height / 2));
+                return new Point(a.x - tmp0.x, a.y + (ssize.height / 2) - tmp0.y);
             }
             else if (o == Origin.MiddleCenter)
             {
-                return new Point(a.x + (ssize.width / 2), a.y + (ssize.height/2));
+                return new Point(a.x + (ssize.width / 2) - tmp0.x, a.y + (ssize.height / 2) - tmp0.y);
             }
             else if (o == Origin.MiddleRight)
             {
-                return new Point(a.x + (ssize.width), a.y + (ssize.height / 2));
+                return new Point(a.x + (ssize.width) - tmp0.x, a.y + (ssize.height / 2) - tmp0.y);
             }
             else if (o == Origin.BottomLeft)
             {
-                return new Point(a.x, a.y + (ssize.height));
+                return new Point(a.x - tmp0.x, a.y + (ssize.height) - tmp0.y);
             }
             else if (o == Origin.BottomCenter)
             {
-                return new Point(a.x + (ssize.width / 2), a.y + (ssize.height));
+                return new Point(a.x + (ssize.width / 2) - tmp0.x, a.y + (ssize.height) - tmp0.y);
             }
             else if (o == Origin.BottomRight)
             {
-                return new Point(a.x + (ssize.width), a.y + (ssize.height));
+                return new Point(a.x + (ssize.width) - tmp0.x, a.y + (ssize.height) - tmp0.y);
             }
             else
             {
                 return a;
             }
         }
+        public Point CalcAlign(Size s)
+        {
+            if (al == Alignment.TopLeft)
+            {
+                return new Point(0, 0);
+            }
+            else if (al == Alignment.TopCenter)
+            {
+                return new Point(s.width / 2, 0);
+            }
+            else if (al == Alignment.TopRight)
+            {
+                return new Point(s.width, 0);
+            }
+            else if (al == Alignment.MiddleLeft)
+            {
+                return new Point(0, s.height / 2);
+            }
+            else if (al == Alignment.MiddleCenter)
+            {
+                return new Point(s.width / 2, s.height / 2);
+            }
+            else if (al == Alignment.MiddleRight)
+            {
+                return new Point(s.width, s.height / 2);
+            }
+            else if (al == Alignment.BottomLeft)
+            {
+                return new Point(0, s.height);
+            }
+            else if (al == Alignment.BottomCenter)
+            {
+                return new Point(s.width / 2, s.height);
+            }
+            else if (al == Alignment.BottomRight)
+            {
+                return new Point(s.width, s.height);
+            }
+            else
+            {
+                return new Point(0, 0);
+            }
+        }
         public Point CalcPos(Point a, Size ssize)
         {
             if (p == Positioning.Relative || p == Positioning.Square)
             {
-                return new Point(ssize.width*(a.x/100), ssize.height*(a.y/100));
+                return new Point(ssize.width * (a.x / 100), ssize.height * (a.y / 100));
             }
             else
             {
@@ -213,6 +268,11 @@ namespace UIStuff
             x = v.X;
             y = v.Y;
         }
+        public Point(float s)
+        {
+            x = s;
+            y = s;
+        }
         public Vector2 GetVector()
         {
             return new Vector2(x, y);
@@ -240,6 +300,11 @@ namespace UIStuff
             width = v.X;
             height = v.Y;
         }
+        public Size(float s)
+        {
+            width = s;
+            height = s;
+        }
         public Vector2 GetVector()
         {
             return new Vector2(width, height);
@@ -248,7 +313,8 @@ namespace UIStuff
     class UIImage : UIControl
     {
         protected Texture2D t;
-        public UIImage(Positioning p, Origin o, Point pos, Size size, Texture2D img):base(p, o, pos, size)
+        public UIImage(Positioning p, Origin o, Alignment al, Point pos, Size size, Texture2D img)
+            : base(p, o, al, pos, size)
         {
             t = img;
         }

@@ -16,8 +16,10 @@ namespace UIStuff
         //TODO: add font scaling
         protected SpriteFont f;
         protected Color c;
-        public UIText(Positioning p, Origin o, Point pos, string txt, SpriteFont font, Color col):base(p, o, pos, new Size(font.MeasureString(txt)))
+        public UIText(Positioning p, Origin o, Alignment al, Point pos, string txt, SpriteFont font, Color col)
+            : base(p, o, al, pos, new Size(font.MeasureString(txt)))
         {
+            calcsize = false;
             t = txt;
             f = font;
             c = col;
