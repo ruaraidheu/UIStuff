@@ -9,7 +9,7 @@ using UIStuff;
 
 namespace UIStuff
 {
-    class UIText : UIControl
+    public class UIText : UIControl
     {
         protected string t;
 
