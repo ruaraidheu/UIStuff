@@ -9,7 +9,7 @@ using UIStuff;
 
 namespace UIStuff
 {
-    class UIController
+    public class UIController
     {
         private List<UIBase> list;
         private int current = 0;
@@ -82,7 +82,7 @@ namespace UIStuff
             current = i;
         }
     }
-    class UIBase
+    public class UIBase
     {
         public string name { get; private set; }
         List<UIControl> ctrls;
@@ -123,7 +123,7 @@ namespace UIStuff
             }
         }
     }
-    class UIControl
+    public class UIControl
     {
         protected Point pos;
         protected Size size;
@@ -356,7 +356,7 @@ namespace UIStuff
             return new Vector2(width, height);
         }
     }
-    class UIImage : UIControl
+    public class UIImage : UIControl
     {
         protected Texture2D t;
         public UIImage(Positioning p, Origin o, Alignment al, Point pos, Size size, Texture2D img)
