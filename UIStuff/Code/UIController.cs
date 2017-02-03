@@ -16,6 +16,13 @@ namespace UIStuff
         public UIController()
         {
             list = new List<UIBase>();
+            Add(
+                new UIBase(
+                    "none",
+                    UIBase.Type.full,
+                    UIBase.Overlaytype.Game
+                )
+            );
         }
         /// <summary>
         /// Adds UI to Controller, Returns false if the name is the same as a previously added UI

@@ -110,6 +110,7 @@ namespace UIStuff
                     )
                 )
             );
+            controller.Switchto("splash");
         }
 
         /// <summary>
