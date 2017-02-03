@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using UIStuff.Code;
+using System;
+using System.Threading;
+using UIStuff;
 
 namespace UIStuff
 {
@@ -11,12 +13,12 @@ namespace UIStuff
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        SpriteBatch sb;
         int width = 1920;
         int height = 1080;
         bool fullscreen = false;
 
-        UIStuff.Code.UIController controller;
+        UIStuff.UIController controller;
 
         public Game1()
         {
@@ -47,20 +49,68 @@ namespace UIStuff
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            sb = new SpriteBatch(GraphicsDevice);
 
             //Adds a base which contains one control, an image.
             controller.Add(
-                new UIBase("splash", UIBase.Type.full, 
+                new UIBase("splash", UIBase.Type.full, UIBase.Overlaytype.Menu,
                     new UIImage(
-                        UIControl.Positioning.Relative, 
-                        UIControl.Origin.TopLeft, 
-                        new Code.Point(0, 0), 
-                        new Size(100, 100), 
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.TopLeft,
+                        UIControl.Alignment.TopLeft,
+                        new Point(0, 0),
+                        new Size(100, 100),
+                        Content.Load<Texture2D>("testimg")
+                    ),
+                    new UIText(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.TopCenter,
+                        UIControl.Alignment.MiddleCenter,
+                        new Point(0, 10),
+                        "text that is placed near the top",
+                        Content.Load<SpriteFont>("testfont"),
+                        Color.Red
+                    ),
+                    new UIImage(
+                        UIControl.Positioning.Square,
+                        UIControl.Origin.BottomRight,
+                        UIControl.Alignment.BottomRight,
+                        new Point(0, 0),
+                        new Size(25),
                         Content.Load<Texture2D>("testimg")
                     )
                 )
             );
+            controller.Add(
+                new UIBase("menu", UIBase.Type.full, UIBase.Overlaytype.Menu,
+                    new UIImage(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.TopLeft,
+                        UIControl.Alignment.TopLeft,
+                        new Point(0, 0),
+                        new Size(100, 100),
+                        Content.Load<Texture2D>("testimg")
+                    ),
+                    new UIText(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.BottomLeft,
+                        UIControl.Alignment.BottomLeft,
+                        new Point(10, -10),
+                        "this is a different menu",
+                        Content.Load<SpriteFont>("testfont"),
+                        Color.Green
+                    ),
+                    new UIImage(
+                        UIControl.Positioning.Square,
+                        UIControl.Origin.BottomCenter,
+                        UIControl.Alignment.BottomCenter,
+                        new Point(0, 0),
+                        new Size(50),
+                        Content.Load<Texture2D>("testimg")
+                    )
+                )
+            );
+            controller.Switchto("splash");
         }
 
         /// <summary>
@@ -69,9 +119,11 @@ namespace UIStuff
         /// </summary>
         protected override void UnloadContent()
         {
-            
+
         }
 
+
+        bool splashchanged = true;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -82,7 +134,16 @@ namespace UIStuff
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            controller.Update();
+            if (gameTime.TotalGameTime.TotalSeconds > 3 && splashchanged)
+            {
+                controller.Switchto("menu");
+                splashchanged = false;
+            }
+
+            if (controller.Update() == UIBase.Overlaytype.Game)
+            {
+                //gamestuff
+            }
 
             base.Update(gameTime);
         }
@@ -95,9 +156,9 @@ namespace UIStuff
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
-            controller.Draw(spriteBatch, graphics.GraphicsDevice.Viewport);
-            spriteBatch.End();
+            sb.Begin();
+            controller.Draw(sb, graphics.GraphicsDevice.Viewport);
+            sb.End();
 
             base.Draw(gameTime);
         }
