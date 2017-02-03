@@ -58,7 +58,7 @@ namespace UIStuff
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
                         UIControl.Alignment.TopLeft,
-                        new Point(0, 0),
+                        Point.Zero,
                         new Size(100, 100),
                         Content.Load<Texture2D>("testimg")
                     ),
@@ -75,7 +75,7 @@ namespace UIStuff
                         UIControl.Positioning.Square,
                         UIControl.Origin.BottomRight,
                         UIControl.Alignment.BottomRight,
-                        new Point(0, 0),
+                        Point.Zero,
                         new Size(25),
                         Content.Load<Texture2D>("testimg")
                     )
@@ -87,7 +87,7 @@ namespace UIStuff
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
                         UIControl.Alignment.TopLeft,
-                        new Point(0, 0),
+                        Point.Zero,
                         new Size(100, 100),
                         Content.Load<Texture2D>("testimg")
                     ),
@@ -104,9 +104,28 @@ namespace UIStuff
                         UIControl.Positioning.Square,
                         UIControl.Origin.BottomCenter,
                         UIControl.Alignment.BottomCenter,
-                        new Point(0, 0),
+                        Point.Zero,
                         new Size(50),
                         Content.Load<Texture2D>("testimg")
+                    ),
+                    new UIBGText(UIControl.Positioning.Absolute, 
+                        UIControl.Origin.MiddleLeft, 
+                        UIControl.Alignment.BottomRight, 
+                        new Point(200, -10), 
+                        new Size(100), 
+                        Content.Load<Texture2D>("testimg"), 
+                        "bgtext", 
+                        Content.Load<SpriteFont>("testfont"), 
+                        Color.Black
+                    ),
+                    new UIBGImg(UIControl.Positioning.Relative, 
+                        UIControl.Origin.TopLeft, 
+                        UIControl.Alignment.TopLeft, 
+                        new Point(10, 10),
+                        Content.Load<Texture2D>("testimg"),
+                        "text goes here\"",
+                        Content.Load<SpriteFont>("testfont"),
+                        Color.Violet
                     )
                 )
             );

@@ -42,8 +42,9 @@ namespace UIStuff
                     Console.WriteLine("Name of new UIBase is the same as one already in use: " + uib.name);
 #if DEBUG
                     throw new Exception("Name of new UIBase is the same as one already in use: " + uib.name);
-#endif
+#else
                     return false;
+#endif
                 }
             }
             list.Add(uib);
@@ -147,7 +148,7 @@ namespace UIStuff
         protected Alignment al;
         protected Point calcuedpos;
         protected Size calcuedsize;
-        protected bool calcsize = true;
+        public bool calcsize { get; set; }
         Viewport lview;
         /// <summary>
         /// Absolute is in pixels 
@@ -174,6 +175,7 @@ namespace UIStuff
         }
         public UIControl(Positioning _p, Origin _o, Alignment _al, Point _pos, Size _size)
         {
+            calcsize = true;
             pos = _pos;
             size = _size;
             p = _p;
@@ -250,7 +252,7 @@ namespace UIStuff
         {
             if (al == Alignment.TopLeft)
             {
-                return new Point(0, 0);
+                return Point.Zero;
             }
             else if (al == Alignment.TopCenter)
             {
@@ -286,7 +288,7 @@ namespace UIStuff
             }
             else
             {
-                return new Point(0, 0);
+                return Point.Zero;
             }
         }
         public Point CalcPos(Point a, Size ssize)
@@ -342,6 +344,13 @@ namespace UIStuff
         {
             return new Rectangle((int)x, (int)y, (int)s.width, (int)s.height);
         }
+        public static Point Zero
+        {
+            get
+            {
+                return new Point(0);
+            }
+        }
     }
     public struct Size
     {
@@ -369,6 +378,13 @@ namespace UIStuff
         public Vector2 GetVector()
         {
             return new Vector2(width, height);
+        }
+        public static Size Zero
+        {
+            get
+            {
+                return new Size(0);
+            }
         }
     }
     public class UIImage : UIControl
