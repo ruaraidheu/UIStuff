@@ -13,13 +13,17 @@ namespace UIStuff
     {
         private List<UIBase> list;
         private int current = 0;
+        public bool Updating { get; set; }
+        public bool Drawing { get; set; }
         public UIController()
         {
             list = new List<UIBase>();
+            Updating = true;
+            Drawing = true;
             Add(
                 new UIBase(
                     "none",
-                    UIBase.Type.full,
+                    UIBase.Type.over,
                     UIBase.Overlaytype.Game
                 )
             );
@@ -45,14 +49,25 @@ namespace UIStuff
             list.Add(uib);
             return true;
         }
+        public void Visible(bool b)
+        {
+            Updating = b;
+            Drawing = b;
+        }
         public UIBase.Overlaytype Update()
         {
-            list[current].Update();
+            if (Updating)
+            {
+                list[current].Update();
+            }
             return list[current].overlay;
         }
         public UIBase.Overlaytype Draw(SpriteBatch sb, Viewport v)
         {
-            list[current].Draw(sb, v);
+            if (Drawing)
+            {
+                list[current].Draw(sb, v);
+            }
             return list[current].overlay;
         }
         public void Switchto(string s)
@@ -89,7 +104,7 @@ namespace UIStuff
         public Overlaytype overlay { get; private set; }
         public enum Type
         {
-            full, partial
+            over, world
         }
         //Replace with string or int?
         public enum Overlaytype

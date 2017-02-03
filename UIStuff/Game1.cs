@@ -18,7 +18,7 @@ namespace UIStuff
         int height = 1080;
         bool fullscreen = false;
 
-        UIStuff.UIController controller;
+        UIController controller;
 
         public Game1()
         {
@@ -53,7 +53,7 @@ namespace UIStuff
 
             //Adds a base which contains one control, an image.
             controller.Add(
-                new UIBase("splash", UIBase.Type.full, UIBase.Overlaytype.Menu,
+                new UIBase("splash", UIBase.Type.over, UIBase.Overlaytype.Menu,
                     new UIImage(
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
@@ -82,7 +82,7 @@ namespace UIStuff
                 )
             );
             controller.Add(
-                new UIBase("menu", UIBase.Type.full, UIBase.Overlaytype.Menu,
+                new UIBase("menu", UIBase.Type.over, UIBase.Overlaytype.Menu,
                     new UIImage(
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
@@ -140,10 +140,12 @@ namespace UIStuff
                 splashchanged = false;
             }
 
-            if (controller.Update() == UIBase.Overlaytype.Game)
+            UIBase.Overlaytype olt = controller.Update();
+            if (olt == UIBase.Overlaytype.Game || olt == UIBase.Overlaytype.Running)
             {
-                //gamestuff
+                //Pausing Code
             }
+            //Non-Pausing Code
 
             base.Update(gameTime);
         }
