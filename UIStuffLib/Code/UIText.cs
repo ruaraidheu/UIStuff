@@ -85,6 +85,8 @@ namespace UIStuff
         public UIBGImg(Positioning p, Origin o, Alignment al, Point pos, Texture2D img, string txt, SpriteFont font, Color col, int margin = 0)
             : base(p, o, al, pos, txt, font, col)
         {
+            margin = 0;
+
             i = new UIImage(p, o, al, pos, new Size(size.width + (2 * margin), size.height + (2 * margin)), img);
             i.calcsize = false;
         }

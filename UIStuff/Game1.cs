@@ -109,6 +109,17 @@ namespace UIStuff
                         "none",
                         true,
                         new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                    ),
+                    new UIButton(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.BottomCenter,
+                        UIControl.Alignment.BottomCenter,
+                        new Point(0, -5),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.Green),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.Red),
+                        "exit",
+                        true,
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
                     )
                  )
              );
