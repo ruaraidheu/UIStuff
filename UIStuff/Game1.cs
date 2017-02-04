@@ -18,7 +18,7 @@ namespace UIStuff
         int height = 1080;
         bool fullscreen = false;
 
-        UIStuff.UIController controller;
+        UIController controller;
 
         public Game1()
         {
@@ -37,7 +37,7 @@ namespace UIStuff
         /// </summary>
         protected override void Initialize()
         {
-            controller = new UIController();
+            controller = new UIController(this, false);
 
             base.Initialize();
         }
@@ -50,15 +50,14 @@ namespace UIStuff
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             sb = new SpriteBatch(GraphicsDevice);
-
             //Adds a base which contains one control, an image.
             controller.Add(
-                new UIBase("splash", UIBase.Type.full, UIBase.Overlaytype.Menu,
+                new UIBase("splash", UIBase.Type.over, UIBase.Overlaytype.Menu, false,
                     new UIImage(
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
                         UIControl.Alignment.TopLeft,
-                        new Point(0, 0),
+                        Point.Zero,
                         new Size(100, 100),
                         Content.Load<Texture2D>("testimg")
                     ),
@@ -75,19 +74,51 @@ namespace UIStuff
                         UIControl.Positioning.Square,
                         UIControl.Origin.BottomRight,
                         UIControl.Alignment.BottomRight,
-                        new Point(0, 0),
+                        Point.Zero,
                         new Size(25),
                         Content.Load<Texture2D>("testimg")
                     )
                 )
-            );
+            ); 
             controller.Add(
-                new UIBase("menu", UIBase.Type.full, UIBase.Overlaytype.Menu,
+                 new UIBase("buttontarg", UIBase.Type.over, UIBase.Overlaytype.Menu, true,
+                     new UIImage(
+                         UIControl.Positioning.Relative,
+                         UIControl.Origin.TopLeft,
+                         UIControl.Alignment.TopLeft,
+                         Point.Zero,
+                         new Size(100, 100),
+                         Content.Load<Texture2D>("testimg")
+                     ),
+                     new UIText(
+                         UIControl.Positioning.Relative,
+                         UIControl.Origin.TopCenter,
+                         UIControl.Alignment.MiddleCenter,
+                         new Point(0, 10),
+                         "Button targ.",
+                         Content.Load<SpriteFont>("testfont"),
+                         Color.Blue
+                     ),
+                    new UIButton(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.BottomCenter,
+                        UIControl.Alignment.BottomCenter,
+                        new Point(0, -10),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.Green),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.Red),
+                        "none",
+                        true,
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                    )
+                 )
+             );
+            controller.Add(
+                new UIBase("menu", UIBase.Type.over, UIBase.Overlaytype.Menu, true,
                     new UIImage(
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
                         UIControl.Alignment.TopLeft,
-                        new Point(0, 0),
+                        Point.Zero,
                         new Size(100, 100),
                         Content.Load<Texture2D>("testimg")
                     ),
@@ -104,9 +135,39 @@ namespace UIStuff
                         UIControl.Positioning.Square,
                         UIControl.Origin.BottomCenter,
                         UIControl.Alignment.BottomCenter,
-                        new Point(0, 0),
+                        Point.Zero,
                         new Size(50),
                         Content.Load<Texture2D>("testimg")
+                    ),
+                    new UIBGText(UIControl.Positioning.Absolute, 
+                        UIControl.Origin.MiddleLeft, 
+                        UIControl.Alignment.BottomRight, 
+                        new Point(200, -10), 
+                        new Size(100), 
+                        Content.Load<Texture2D>("testimg"), 
+                        "bgtext", 
+                        Content.Load<SpriteFont>("testfont"), 
+                        Color.Black
+                    ),
+                    new UIBGImg(UIControl.Positioning.Relative, 
+                        UIControl.Origin.TopLeft, 
+                        UIControl.Alignment.TopLeft, 
+                        new Point(10, 10),
+                        Content.Load<Texture2D>("testimg"),
+                        "text goes here\"",
+                        Content.Load<SpriteFont>("testfont"),
+                        Color.Violet
+                    ),
+                    new UIButton(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.MiddleCenter,
+                        UIControl.Alignment.MiddleCenter,
+                        Point.Zero,
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Button", Content.Load<SpriteFont>("testfont"), Color.Green),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Button_hov", Content.Load<SpriteFont>("testfont"), Color.Red),
+                        "buttontarg",
+                        false,
+                        ButtonData.Empty
                     )
                 )
             );
@@ -140,10 +201,12 @@ namespace UIStuff
                 splashchanged = false;
             }
 
-            if (controller.Update() == UIBase.Overlaytype.Game)
+            UIBase.Overlaytype olt = controller.Update(Mouse.GetState(), gameTime);
+            if (olt == UIBase.Overlaytype.Game || olt == UIBase.Overlaytype.Running)
             {
-                //gamestuff
+                //Pausing Code
             }
+            //Non-Pausing Code
 
             base.Update(gameTime);
         }

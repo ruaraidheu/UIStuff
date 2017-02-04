@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +14,23 @@ namespace UIStuff
     {
         private List<UIBase> list;
         private int current = 0;
-        public UIController()
+        public bool Updating { get; set; }
+        public bool Drawing { get; set; }
+        bool mig;
+        Game game;
+        public UIController(Game _game, bool mouseingame)
         {
+            game = _game;
+            mig = mouseingame;
             list = new List<UIBase>();
+            Updating = true;
+            Drawing = true;
             Add(
                 new UIBase(
                     "none",
-                    UIBase.Type.full,
-                    UIBase.Overlaytype.Game
+                    UIBase.Type.over,
+                    UIBase.Overlaytype.Game,
+                    mig
                 )
             );
         }
@@ -38,21 +48,41 @@ namespace UIStuff
                     Console.WriteLine("Name of new UIBase is the same as one already in use: " + uib.name);
 #if DEBUG
                     throw new Exception("Name of new UIBase is the same as one already in use: " + uib.name);
-#endif
+#else
                     return false;
+#endif
                 }
             }
             list.Add(uib);
             return true;
         }
-        public UIBase.Overlaytype Update()
+        public void Visible(bool b)
         {
-            list[current].Update();
+            Updating = b;
+            Drawing = b;
+        }
+        public UIBase.Overlaytype Update(MouseState m, GameTime gt)
+        {
+            if (Updating)
+            {
+                string tmp = list[current].Update(m, gt);
+                if (tmp != null)
+                {
+                    Switchto(tmp);
+                }
+            }
             return list[current].overlay;
         }
         public UIBase.Overlaytype Draw(SpriteBatch sb, Viewport v)
         {
-            list[current].Draw(sb, v);
+            if (Drawing)
+            {
+                list[current].Draw(sb, v);
+            }
+            else
+            {
+                game.IsMouseVisible = mig;
+            }
             return list[current].overlay;
         }
         public void Switchto(string s)
@@ -80,6 +110,7 @@ namespace UIStuff
         public void Switchto(int i)
         {
             current = i;
+            game.IsMouseVisible = list[current].sm;
         }
     }
     public class UIBase
@@ -87,9 +118,10 @@ namespace UIStuff
         public string name { get; private set; }
         List<UIControl> ctrls;
         public Overlaytype overlay { get; private set; }
+        public bool sm { get; set; }
         public enum Type
         {
-            full, partial
+            over, world
         }
         //Replace with string or int?
         public enum Overlaytype
@@ -97,23 +129,29 @@ namespace UIStuff
             Menu, Game, Paused, Running
         }
         private Type t;
-        public UIBase(string _name, Type _t, Overlaytype _overlay, params UIControl[] controls)
+        public UIBase(string _name, Type _t, Overlaytype _overlay, bool showmouse, params UIControl[] controls)
         {
             name = _name;
             overlay = _overlay;
             t = _t;
+            sm = showmouse;
             ctrls = new List<UIControl>();
             foreach (UIControl control in controls)
             {
                 ctrls.Add(control);
             }
         }
-        public void Update()
+        public string Update(MouseState m, GameTime gt)
         {
             foreach (UIControl control in ctrls)
             {
-                control.Update();
+                string tmp = control.Update(m, gt);
+                if (tmp != null)
+                {
+                    return tmp;
+                }
             }
+            return null;
         }
         public void Draw(SpriteBatch sb, Viewport v)
         {
@@ -132,8 +170,8 @@ namespace UIStuff
         protected Alignment al;
         protected Point calcuedpos;
         protected Size calcuedsize;
-        protected bool calcsize = true;
-        Viewport lview;
+        public bool calcsize { get; set; }
+        protected Viewport lview;
         /// <summary>
         /// Absolute is in pixels 
         /// Relative is percentage of the viewport
@@ -159,15 +197,16 @@ namespace UIStuff
         }
         public UIControl(Positioning _p, Origin _o, Alignment _al, Point _pos, Size _size)
         {
+            calcsize = true;
             pos = _pos;
             size = _size;
             p = _p;
             o = _o;
             al = _al;
         }
-        public virtual void Update()
+        public virtual string Update(MouseState m, GameTime gt)
         {
-
+            return null;
         }
         public virtual void Draw(SpriteBatch sb, Viewport v)
         {
@@ -175,17 +214,21 @@ namespace UIStuff
             if (!lview.Equals(v))
             {
                 lview = v;
-                Size tmp0 = new Size(v);
-                if (calcsize)
-                {
-                    calcuedsize = CalcSize(size, tmp0);
-                }
-                else
-                {
-                    calcuedsize = size;
-                }
-                calcuedpos = CalcOrigin(CalcPos(pos, tmp0), calcuedsize, tmp0);
+                CalcAll(v);
             }
+        }
+        protected void CalcAll(Viewport v)
+        {
+            Size tmp0 = new Size(v);
+            if (calcsize)
+            {
+                calcuedsize = CalcSize(size, tmp0);
+            }
+            else
+            {
+                calcuedsize = size;
+            }
+            calcuedpos = CalcOrigin(CalcPos(pos, tmp0), calcuedsize, tmp0);
         }
         public Point CalcOrigin(Point a, Size s, Size ssize)
         {
@@ -235,7 +278,7 @@ namespace UIStuff
         {
             if (al == Alignment.TopLeft)
             {
-                return new Point(0, 0);
+                return Point.Zero;
             }
             else if (al == Alignment.TopCenter)
             {
@@ -271,7 +314,7 @@ namespace UIStuff
             }
             else
             {
-                return new Point(0, 0);
+                return Point.Zero;
             }
         }
         public Point CalcPos(Point a, Size ssize)
@@ -327,6 +370,13 @@ namespace UIStuff
         {
             return new Rectangle((int)x, (int)y, (int)s.width, (int)s.height);
         }
+        public static Point Zero
+        {
+            get
+            {
+                return new Point(0);
+            }
+        }
     }
     public struct Size
     {
@@ -354,6 +404,13 @@ namespace UIStuff
         public Vector2 GetVector()
         {
             return new Vector2(width, height);
+        }
+        public static Size Zero
+        {
+            get
+            {
+                return new Size(0);
+            }
         }
     }
     public class UIImage : UIControl
