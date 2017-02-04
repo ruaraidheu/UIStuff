@@ -70,6 +70,7 @@ namespace UIStuff
     public class UIBGImg : UIText
     {
         UIImage i;
+        int margin;
         /// <summary>
         /// Margin doesn't work yet. Leave it at 0.
         /// </summary>
@@ -82,11 +83,17 @@ namespace UIStuff
         /// <param name="font"></param>
         /// <param name="col"></param>
         /// <param name="margin"></param>
-        public UIBGImg(Positioning p, Origin o, Alignment al, Point pos, Texture2D img, string txt, SpriteFont font, Color col, int margin = 0)
+        public UIBGImg(Positioning p, Origin o, Alignment al, Point pos, Texture2D img, string txt, SpriteFont font, Color col, int _margin = 0)
             : base(p, o, al, pos, txt, font, col)
         {
-            margin = 0;
+            _margin = 0;
 
+            i = new UIImage(p, o, al, pos, new Size(size.width + (2 * margin), size.height + (2 * margin)), img);
+            i.calcsize = false;
+            margin = _margin;
+        }
+        public void ChangeImage(Texture2D img)
+        {
             i = new UIImage(p, o, al, pos, new Size(size.width + (2 * margin), size.height + (2 * margin)), img);
             i.calcsize = false;
         }
@@ -171,6 +178,7 @@ namespace UIStuff
                         {
                             bc = ButtonCurr.Click;
                             Changetext(click.s, click.c, click.f);
+                            ChangeImage(click.t);
                         }
                     }
                     else
@@ -186,12 +194,14 @@ namespace UIStuff
                 {
                     bc = ButtonCurr.Hover;
                     Changetext(hover.s, hover.c, hover.f);
+                    ChangeImage(hover.t);
                 }
             }
             else if (bc != ButtonCurr.Standard)
             {
                 bc = ButtonCurr.Standard;
                 Changetext(stand.s, stand.c, stand.f);
+                ChangeImage(stand.t);
             }
             lastupdate = m.LeftButton;
             return null;

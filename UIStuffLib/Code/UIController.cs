@@ -33,6 +33,14 @@ namespace UIStuff
                     mig
                 )
             );
+            Add(
+                new UIBase(
+                    "exit",
+                    UIBase.Type.over,
+                    UIBase.Overlaytype.Game,
+                    mig
+                )
+            );
         }
         /// <summary>
         /// Adds UI to Controller, Returns false if the name is the same as a previously added UI
@@ -133,7 +141,7 @@ namespace UIStuff
         public bool sm { get; set; }
         public enum Type
         {
-            over, world
+            over, partial, world
         }
         //Replace with string or int?
         public enum Overlaytype
