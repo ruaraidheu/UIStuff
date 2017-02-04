@@ -37,7 +37,7 @@ namespace UIStuff
         /// </summary>
         protected override void Initialize()
         {
-            controller = new UIController();
+            controller = new UIController(this, false);
 
             base.Initialize();
         }
@@ -50,10 +50,9 @@ namespace UIStuff
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             sb = new SpriteBatch(GraphicsDevice);
-
             //Adds a base which contains one control, an image.
             controller.Add(
-                new UIBase("splash", UIBase.Type.over, UIBase.Overlaytype.Menu,
+                new UIBase("splash", UIBase.Type.over, UIBase.Overlaytype.Menu, false,
                     new UIImage(
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
@@ -80,9 +79,41 @@ namespace UIStuff
                         Content.Load<Texture2D>("testimg")
                     )
                 )
-            );
+            ); 
             controller.Add(
-                new UIBase("menu", UIBase.Type.over, UIBase.Overlaytype.Menu,
+                 new UIBase("buttontarg", UIBase.Type.over, UIBase.Overlaytype.Menu, true,
+                     new UIImage(
+                         UIControl.Positioning.Relative,
+                         UIControl.Origin.TopLeft,
+                         UIControl.Alignment.TopLeft,
+                         Point.Zero,
+                         new Size(100, 100),
+                         Content.Load<Texture2D>("testimg")
+                     ),
+                     new UIText(
+                         UIControl.Positioning.Relative,
+                         UIControl.Origin.TopCenter,
+                         UIControl.Alignment.MiddleCenter,
+                         new Point(0, 10),
+                         "Button targ.",
+                         Content.Load<SpriteFont>("testfont"),
+                         Color.Blue
+                     ),
+                    new UIButton(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.BottomCenter,
+                        UIControl.Alignment.BottomCenter,
+                        new Point(0, -10),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.Green),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.Red),
+                        "none",
+                        true,
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                    )
+                 )
+             );
+            controller.Add(
+                new UIBase("menu", UIBase.Type.over, UIBase.Overlaytype.Menu, true,
                     new UIImage(
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
@@ -126,6 +157,17 @@ namespace UIStuff
                         "text goes here\"",
                         Content.Load<SpriteFont>("testfont"),
                         Color.Violet
+                    ),
+                    new UIButton(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.MiddleCenter,
+                        UIControl.Alignment.MiddleCenter,
+                        Point.Zero,
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Button", Content.Load<SpriteFont>("testfont"), Color.Green),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Button_hov", Content.Load<SpriteFont>("testfont"), Color.Red),
+                        "buttontarg",
+                        false,
+                        ButtonData.Empty
                     )
                 )
             );
@@ -159,7 +201,7 @@ namespace UIStuff
                 splashchanged = false;
             }
 
-            UIBase.Overlaytype olt = controller.Update();
+            UIBase.Overlaytype olt = controller.Update(Mouse.GetState(), gameTime);
             if (olt == UIBase.Overlaytype.Game || olt == UIBase.Overlaytype.Running)
             {
                 //Pausing Code
