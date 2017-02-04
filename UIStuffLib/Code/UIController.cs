@@ -73,6 +73,11 @@ namespace UIStuff
             }
             return list[current].overlay;
         }
+        public UIBase.Overlaytype Update(MouseState m, GameTime gt, bool mouseingame)
+        {
+            mig = mouseingame;
+            return Update(m, gt);
+        }
         public UIBase.Overlaytype Draw(SpriteBatch sb, Viewport v)
         {
             if (Drawing)
