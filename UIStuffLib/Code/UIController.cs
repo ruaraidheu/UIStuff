@@ -68,10 +68,22 @@ namespace UIStuff
                 string tmp = list[current].Update(m, gt);
                 if (tmp != null)
                 {
-                    Switchto(tmp);
+                    if (tmp == "exit")
+                    {
+                        game.Exit();
+                    }
+                    else
+                    {
+                        Switchto(tmp);
+                    }
                 }
             }
             return list[current].overlay;
+        }
+        public UIBase.Overlaytype Update(MouseState m, GameTime gt, bool mouseingame)
+        {
+            mig = mouseingame;
+            return Update(m, gt);
         }
         public UIBase.Overlaytype Draw(SpriteBatch sb, Viewport v)
         {
