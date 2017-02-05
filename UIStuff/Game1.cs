@@ -77,6 +77,14 @@ namespace UIStuff
                         Point.Zero,
                         new Size(25),
                         Content.Load<Texture2D>("testimg")
+                    ),
+                    new UIImage(
+                        UIControl.Positioning.Square,
+                        UIControl.Origin.BottomLeft,
+                        UIControl.Alignment.BottomLeft,
+                        Point.Zero,
+                        new Size(25),
+                        controller.GetColor(Color.SeaGreen)
                     )
                 )
             ); 
@@ -167,10 +175,11 @@ namespace UIStuff
                         Content.Load<Texture2D>("testimg"),
                         "text goes here\"",
                         Content.Load<SpriteFont>("testfont"),
-                        Color.Violet
+                        Color.Violet,
+                        0.5f
                     ),
                     new UIButton(
-                        UIControl.Positioning.Relative,
+                        UIControl.Positioning.Absolute,
                         UIControl.Origin.MiddleCenter,
                         UIControl.Alignment.MiddleCenter,
                         Point.Zero,
@@ -212,7 +221,7 @@ namespace UIStuff
                 splashchanged = false;
             }
 
-            UIBase.Overlaytype olt = controller.Update(Mouse.GetState(), gameTime);
+            UIBase.Overlaytype olt = controller.Update(gameTime);
             if (olt == UIBase.Overlaytype.Game || olt == UIBase.Overlaytype.Running)
             {
                 //Pausing Code
@@ -231,7 +240,7 @@ namespace UIStuff
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             sb.Begin();
-            controller.Draw(sb, graphics.GraphicsDevice.Viewport);
+            controller.Draw(sb);
             sb.End();
 
             base.Draw(gameTime);

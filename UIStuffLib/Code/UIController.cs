@@ -69,11 +69,19 @@ namespace UIStuff
             Updating = b;
             Drawing = b;
         }
-        public UIBase.Overlaytype Update(MouseState m, GameTime gt)
+        public Texture2D GetColor(Color c)
+        {
+            Texture2D tex = new Texture2D(game.GraphicsDevice, 1, 1);
+            Color[] data = new Color[1];
+            data[0] = c;
+            tex.SetData(data);
+            return tex;
+        }
+        public UIBase.Overlaytype Update(GameTime gt)
         {
             if (Updating)
             {
-                string tmp = list[current].Update(m, gt);
+                string tmp = list[current].Update(Mouse.GetState(), gt);
                 if (tmp != null)
                 {
                     if (tmp == "exit")
@@ -88,16 +96,16 @@ namespace UIStuff
             }
             return list[current].overlay;
         }
-        public UIBase.Overlaytype Update(MouseState m, GameTime gt, bool mouseingame)
+        public UIBase.Overlaytype Update(GameTime gt, bool mouseingame)
         {
             mig = mouseingame;
-            return Update(m, gt);
+            return Update(gt);
         }
-        public UIBase.Overlaytype Draw(SpriteBatch sb, Viewport v)
+        public UIBase.Overlaytype Draw(SpriteBatch sb)
         {
             if (Drawing)
             {
-                list[current].Draw(sb, v);
+                list[current].Draw(sb, game.GraphicsDevice.Viewport);
             }
             else
             {
@@ -236,6 +244,10 @@ namespace UIStuff
                 lview = v;
                 CalcAll(v);
             }
+        }
+        public void Resise(Size s)
+        {
+            size = s;
         }
         protected void CalcAll(Viewport v)
         {

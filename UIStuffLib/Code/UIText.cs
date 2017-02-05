@@ -70,7 +70,7 @@ namespace UIStuff
     public class UIBGImg : UIText
     {
         UIImage i;
-        int margin;
+        float margin;
         /// <summary>
         /// Margin doesn't work yet. Leave it at 0.
         /// </summary>
@@ -83,22 +83,33 @@ namespace UIStuff
         /// <param name="font"></param>
         /// <param name="col"></param>
         /// <param name="margin"></param>
-        public UIBGImg(Positioning p, Origin o, Alignment al, Point pos, Texture2D img, string txt, SpriteFont font, Color col, int _margin = 0)
+        public UIBGImg(Positioning p, Origin o, Alignment al, Point pos, Texture2D img, string txt, SpriteFont font, Color col, float _margin = 0)
             : base(p, o, al, pos, txt, font, col)
         {
-            _margin = 0;
-
-            i = new UIImage(p, o, al, pos, new Size(size.width + (2 * margin), size.height + (2 * margin)), img);
-            i.calcsize = false;
             margin = _margin;
+            margin = 0;
+            i = new UIImage(p, o, al, new Point(pos.x-margin, pos.y-margin), size, img);
+            i.calcsize = false;
         }
         public void ChangeImage(Texture2D img)
         {
-            i = new UIImage(p, o, al, pos, new Size(size.width + (2 * margin), size.height + (2 * margin)), img);
+            i = new UIImage(p, o, al, new Point(pos.x - margin, pos.y - margin), size, img);
             i.calcsize = false;
         }
+        /*public float Calcmargin(int dim, float _margin)
+        {
+            if (p == Positioning.Absolute)
+            {
+                return _margin;
+            }
+            else
+            {
+                return (dim * (_margin / 100));
+            }
+        }*/
         public override void Draw(SpriteBatch sb, Viewport v)
         {
+            //i.Resise(new Size(size.width + (2 * Calcmargin(v.Width, margin)), size.height + (2 * Calcmargin(v.Height, margin))));
             i.Draw(sb, v);
             base.Draw(sb, v);
         }
@@ -148,8 +159,8 @@ namespace UIStuff
         /// <param name="hover"></param>
         /// <param name="activateonrelease"></param>
         /// <param name="click">Use ButtonData.Empty if not using activate on release.</param>
-        public UIButton(Positioning p, Origin o, Alignment al, Point pos, ButtonData standard, ButtonData _hover, string target, bool activateonrelease, ButtonData _click)
-            : base(p, o, al, pos, standard.t, standard.s, standard.f, standard.c)
+        public UIButton(Positioning p, Origin o, Alignment al, Point pos, ButtonData standard, ButtonData _hover, string target, bool activateonrelease, ButtonData _click, float margin = 0)
+            : base(p, o, al, pos, standard.t, standard.s, standard.f, standard.c, margin)
         {
             targ = target;
             stand = standard;
@@ -211,4 +222,8 @@ namespace UIStuff
             base.Draw(sb, v);
         }
     }
+    //public class UITextBox : UIBGText
+    //{
+        
+    //}
 }
