@@ -122,7 +122,7 @@ namespace UIStuff
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopCenter,
                         UIControl.Alignment.TopCenter,
-                        new Point(0, 10),
+                        new Point(0, 40),
                         new ButtonData(controller.GetColor(Color.Peru), "Cinematic", Content.Load<SpriteFont>("testfont"), Color.Green),
                         new ButtonData(controller.GetColor(Color.Purple), "Cinematic", Content.Load<SpriteFont>("testfont"), Color.Red),
                         "cine",
@@ -177,7 +177,8 @@ namespace UIStuff
                         Content.Load<Texture2D>("testimg"), 
                         "bgtext", 
                         Content.Load<SpriteFont>("testfont"), 
-                        Color.Black
+                        Color.Black,
+                        UIBGText.TAlign.Center
                     ),
                     new UIBGImg(UIControl.Positioning.Relative, 
                         UIControl.Origin.TopLeft, 
@@ -199,6 +200,19 @@ namespace UIStuff
                         "buttontarg",
                         false,
                         ButtonData.Empty
+                    ),
+                    new UITextBox(
+                        UIControl.Positioning.Absolute,
+                        UIControl.Origin.TopLeft,
+                        UIControl.Alignment.TopLeft,
+                        new Point(10),
+                        new Size(100, 20),
+                        controller.GetColor(Color.White),
+                        "",
+                        Content.Load<SpriteFont>("testfont"),
+                        Color.Black,
+                        UIBGText.TAlign.Left,
+                        true
                     )
                 )
             );
