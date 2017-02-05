@@ -1,8 +1,4 @@
-# UIStuff
-UIStuff is a C# library to make creating a UI in Monogame as easy as possible.
-
-### Getting Started
-
+# Getting Started
 Add a reference to the library.
 
 Add a using.
@@ -18,17 +14,20 @@ UIController controller;
 ```
 
 Initialise it.
+You need to pass Game1 as the first parameter so the controller can change some of its properties.
+The second parameter states whether you want the mouse to be shown while in game (the menu is set to none or drawing is turned off), this can be changed using an overload of the Update method;
 
 ```C#
-controller = new UIController();
+controller = new UIController(this, false);
 ```
 
 Add some menus.
 
 The UIBase is like a canvas that you paint various controls onto such as images, text, buttons, etc.
-It has a unique name so you can reference it easily later (Or reference "none" to get an invisible menu).
-The type specifies whether it is part of the world or overlayed (world is not implemented).
+It has a unique name so you can reference it easily later (Or reference "none" to get an invisible menu or "exit" to close the game).
+The type specifies whether it is part of the world, overlayed or partial (in a window) (world and partial is not implemented).
 The Overlaytype is returned by the update and draw methods so you can easily control whether the rest of your game is running or paused.
+Showmouse says whether you want the mouse to be shown on that menu.
 The Controls, you can add as many as you like per base they are layered in order, so the first one is at the bottom and each succeeding one is drawn over the top.
 Each type of control has different parameters, a UIImage requires a Texture2D, UIText requires a string a spritefont and a color, etc. Although all of the have several shared properties, Positioning has three types: 
 
@@ -42,9 +41,11 @@ position (relative to origin).
 
 size (although UIText finds this automatically from the spritefont).
 
+The code below will add a background image called "bgimg" and put a title in the center 10% of the way down the viewport.
+
 ```C#
 controller.Add(
-    new UIBase("example", UIBase.Type.over, UIBase.Overlaytype.Menu,
+    new UIBase("example", UIBase.Type.over, UIBase.Overlaytype.Menu, false,
         //Background Image
         new UIImage(
             //You may want to use square instead to maintain aspect ratio
@@ -67,18 +68,19 @@ controller.Add(
         //So on...
     )
 );
+controller.Switchto("example");
 ```
 
 Add the update in the update method in Game1.
 
 ```C#
-controller.Update();
+controller.Update(gameTime);
 ```
 
 Or to add pausing capability.
 
 ```C#
-UIBase.Overlaytype olt = controller.Update();
+UIBase.Overlaytype olt = controller.Update(gameTime);
 if (olt == UIBase.Overlaytype.Game || olt == UIBase.Overlaytype.Running)
 {
     //Pausing Code
@@ -87,10 +89,11 @@ if (olt == UIBase.Overlaytype.Game || olt == UIBase.Overlaytype.Running)
 ```
 
 And finally the draw call.
+Passing the viewport means it can fully adapt to resolution changes.
 
 ```C#
 spriteBatch.Begin();
-controller.Draw(spriteBatch, graphics.GraphicsDevice.Viewport);
+controller.Draw(spriteBatch);
 spriteBatch.End();
 ```
 
@@ -98,7 +101,7 @@ Or adding pausing.
 
 ```C#
 spriteBatch.Begin();
-UIBase.Overlaytype olt = controller.Draw(spriteBatch, graphics.GraphicsDevice.Viewport);
+UIBase.Overlaytype olt = controller.Draw(spriteBatch);
 if (olt == Game || olt == Paused)
 {
     //Code will only be drawn at certain times
