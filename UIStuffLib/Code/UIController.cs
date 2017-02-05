@@ -30,7 +30,19 @@ namespace UIStuff
                     "none",
                     UIBase.Type.over,
                     UIBase.Overlaytype.Game,
-                    mig
+                    mig,
+                    0,
+                    null
+                )
+            );
+            Add(
+                new UIBase(
+                    "exit",
+                    UIBase.Type.over,
+                    UIBase.Overlaytype.Game,
+                    mig,
+                    0,
+                    null
                 )
             );
         }
@@ -61,11 +73,19 @@ namespace UIStuff
             Updating = b;
             Drawing = b;
         }
-        public UIBase.Overlaytype Update(MouseState m, GameTime gt)
+        public Texture2D GetColor(Color c)
+        {
+            Texture2D tex = new Texture2D(game.GraphicsDevice, 1, 1);
+            Color[] data = new Color[1];
+            data[0] = c;
+            tex.SetData(data);
+            return tex;
+        }
+        public UIBase.Overlaytype Update(GameTime gt)
         {
             if (Updating)
             {
-                string tmp = list[current].Update(m, gt);
+                string tmp = list[current].Update(Mouse.GetState(), gt);
                 if (tmp != null)
                 {
                     if (tmp == "exit")
@@ -80,16 +100,16 @@ namespace UIStuff
             }
             return list[current].overlay;
         }
-        public UIBase.Overlaytype Update(MouseState m, GameTime gt, bool mouseingame)
+        public UIBase.Overlaytype Update(GameTime gt, bool mouseingame)
         {
             mig = mouseingame;
-            return Update(m, gt);
+            return Update(gt);
         }
-        public UIBase.Overlaytype Draw(SpriteBatch sb, Viewport v)
+        public UIBase.Overlaytype Draw(SpriteBatch sb)
         {
             if (Drawing)
             {
-                list[current].Draw(sb, v);
+                list[current].Draw(sb, game.GraphicsDevice.Viewport);
             }
             else
             {
@@ -131,9 +151,12 @@ namespace UIStuff
         List<UIControl> ctrls;
         public Overlaytype overlay { get; private set; }
         public bool sm { get; set; }
+        float time;
+        double currtime;
+        string targ;
         public enum Type
         {
-            over, world
+            over, partial, world
         }
         //Replace with string or int?
         public enum Overlaytype
@@ -141,10 +164,12 @@ namespace UIStuff
             Menu, Game, Paused, Running
         }
         private Type t;
-        public UIBase(string _name, Type _t, Overlaytype _overlay, bool showmouse, params UIControl[] controls)
+        public UIBase(string _name, Type _t, Overlaytype _overlay, bool showmouse, float secondstochange, string timetarget, params UIControl[] controls)
         {
             name = _name;
             overlay = _overlay;
+            time = secondstochange;
+            targ = timetarget;
             t = _t;
             sm = showmouse;
             ctrls = new List<UIControl>();
@@ -155,6 +180,15 @@ namespace UIStuff
         }
         public string Update(MouseState m, GameTime gt)
         {
+            if (time > 0)
+            {
+                currtime += gt.ElapsedGameTime.TotalSeconds;
+                if (currtime > time)
+                {
+                    currtime = 0;
+                    return targ;
+                }
+            }
             foreach (UIControl control in ctrls)
             {
                 string tmp = control.Update(m, gt);
@@ -228,6 +262,10 @@ namespace UIStuff
                 lview = v;
                 CalcAll(v);
             }
+        }
+        public void Resise(Size s)
+        {
+            size = s;
         }
         protected void CalcAll(Viewport v)
         {

@@ -52,7 +52,7 @@ namespace UIStuff
             sb = new SpriteBatch(GraphicsDevice);
             //Adds a base which contains one control, an image.
             controller.Add(
-                new UIBase("splash", UIBase.Type.over, UIBase.Overlaytype.Menu, false,
+                new UIBase("splash", UIBase.Type.over, UIBase.Overlaytype.Menu, false, 3, "menu",
                     new UIImage(
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
@@ -77,11 +77,19 @@ namespace UIStuff
                         Point.Zero,
                         new Size(25),
                         Content.Load<Texture2D>("testimg")
+                    ),
+                    new UIImage(
+                        UIControl.Positioning.Square,
+                        UIControl.Origin.BottomLeft,
+                        UIControl.Alignment.BottomLeft,
+                        Point.Zero,
+                        new Size(25),
+                        controller.GetColor(Color.SeaGreen)
                     )
                 )
             ); 
             controller.Add(
-                 new UIBase("buttontarg", UIBase.Type.over, UIBase.Overlaytype.Menu, true,
+                 new UIBase("buttontarg", UIBase.Type.over, UIBase.Overlaytype.Menu, true, 0, null,
                      new UIImage(
                          UIControl.Positioning.Relative,
                          UIControl.Origin.TopLeft,
@@ -112,6 +120,17 @@ namespace UIStuff
                     ),
                     new UIButton(
                         UIControl.Positioning.Relative,
+                        UIControl.Origin.TopCenter,
+                        UIControl.Alignment.TopCenter,
+                        new Point(0, 40),
+                        new ButtonData(controller.GetColor(Color.Peru), "Cinematic", Content.Load<SpriteFont>("testfont"), Color.Green),
+                        new ButtonData(controller.GetColor(Color.Purple), "Cinematic", Content.Load<SpriteFont>("testfont"), Color.Red),
+                        "cine",
+                        true,
+                        new ButtonData(controller.GetColor(Color.LemonChiffon), "Cinematic", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                    ),
+                    new UIButton(
+                        UIControl.Positioning.Relative,
                         UIControl.Origin.BottomCenter,
                         UIControl.Alignment.BottomCenter,
                         new Point(0, -5),
@@ -124,7 +143,7 @@ namespace UIStuff
                  )
              );
             controller.Add(
-                new UIBase("menu", UIBase.Type.over, UIBase.Overlaytype.Menu, true,
+                new UIBase("menu", UIBase.Type.over, UIBase.Overlaytype.Menu, true, 0, null,
                     new UIImage(
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
@@ -158,7 +177,8 @@ namespace UIStuff
                         Content.Load<Texture2D>("testimg"), 
                         "bgtext", 
                         Content.Load<SpriteFont>("testfont"), 
-                        Color.Black
+                        Color.Black,
+                        UIBGText.TAlign.Center
                     ),
                     new UIBGImg(UIControl.Positioning.Relative, 
                         UIControl.Origin.TopLeft, 
@@ -167,10 +187,11 @@ namespace UIStuff
                         Content.Load<Texture2D>("testimg"),
                         "text goes here\"",
                         Content.Load<SpriteFont>("testfont"),
-                        Color.Violet
+                        Color.Violet,
+                        0.5f
                     ),
                     new UIButton(
-                        UIControl.Positioning.Relative,
+                        UIControl.Positioning.Absolute,
                         UIControl.Origin.MiddleCenter,
                         UIControl.Alignment.MiddleCenter,
                         Point.Zero,
@@ -179,6 +200,55 @@ namespace UIStuff
                         "buttontarg",
                         false,
                         ButtonData.Empty
+                    ),
+                    new UITextBox(
+                        UIControl.Positioning.Absolute,
+                        UIControl.Origin.TopLeft,
+                        UIControl.Alignment.TopLeft,
+                        new Point(10),
+                        new Size(100, 20),
+                        controller.GetColor(Color.White),
+                        "",
+                        Content.Load<SpriteFont>("testfont"),
+                        Color.Black,
+                        UIBGText.TAlign.Left,
+                        true
+                    )
+                )
+            );
+            controller.Add(
+                new UIBase("cine", UIBase.Type.over, UIBase.Overlaytype.Menu, false, 5, "none",
+                    new UIImage(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.TopLeft,
+                        UIControl.Alignment.TopLeft,
+                        Point.Zero,
+                        new Size(100, 50),
+                        controller.GetColor(Color.SkyBlue)
+                    ),
+                    new UIImage(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.TopLeft,
+                        UIControl.Alignment.TopLeft,
+                        new Point(0, 50),
+                        new Size(100, 50),
+                        controller.GetColor(Color.ForestGreen)
+                    ),
+                    new UIImage(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.TopLeft,
+                        UIControl.Alignment.TopLeft,
+                        Point.Zero,
+                        new Size(100, 10),
+                        controller.GetColor(Color.Black)
+                    ),
+                    new UIImage(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.TopLeft,
+                        UIControl.Alignment.TopLeft,
+                        new Point(0, 90),
+                        new Size(100, 10),
+                        controller.GetColor(Color.Black)
                     )
                 )
             );
@@ -193,9 +263,6 @@ namespace UIStuff
         {
 
         }
-
-
-        bool splashchanged = true;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -206,13 +273,7 @@ namespace UIStuff
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (gameTime.TotalGameTime.TotalSeconds > 3 && splashchanged)
-            {
-                controller.Switchto("menu");
-                splashchanged = false;
-            }
-
-            UIBase.Overlaytype olt = controller.Update(Mouse.GetState(), gameTime);
+            UIBase.Overlaytype olt = controller.Update(gameTime);
             if (olt == UIBase.Overlaytype.Game || olt == UIBase.Overlaytype.Running)
             {
                 //Pausing Code
@@ -231,7 +292,7 @@ namespace UIStuff
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             sb.Begin();
-            controller.Draw(sb, graphics.GraphicsDevice.Viewport);
+            controller.Draw(sb);
             sb.End();
 
             base.Draw(gameTime);
