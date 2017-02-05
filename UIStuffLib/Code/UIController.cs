@@ -30,7 +30,9 @@ namespace UIStuff
                     "none",
                     UIBase.Type.over,
                     UIBase.Overlaytype.Game,
-                    mig
+                    mig,
+                    0,
+                    null
                 )
             );
             Add(
@@ -38,7 +40,9 @@ namespace UIStuff
                     "exit",
                     UIBase.Type.over,
                     UIBase.Overlaytype.Game,
-                    mig
+                    mig,
+                    0,
+                    null
                 )
             );
         }
@@ -147,6 +151,9 @@ namespace UIStuff
         List<UIControl> ctrls;
         public Overlaytype overlay { get; private set; }
         public bool sm { get; set; }
+        float time;
+        double currtime;
+        string targ;
         public enum Type
         {
             over, partial, world
@@ -157,10 +164,12 @@ namespace UIStuff
             Menu, Game, Paused, Running
         }
         private Type t;
-        public UIBase(string _name, Type _t, Overlaytype _overlay, bool showmouse, params UIControl[] controls)
+        public UIBase(string _name, Type _t, Overlaytype _overlay, bool showmouse, float secondstochange, string timetarget, params UIControl[] controls)
         {
             name = _name;
             overlay = _overlay;
+            time = secondstochange;
+            targ = timetarget;
             t = _t;
             sm = showmouse;
             ctrls = new List<UIControl>();
@@ -171,6 +180,15 @@ namespace UIStuff
         }
         public string Update(MouseState m, GameTime gt)
         {
+            if (time > 0)
+            {
+                currtime += gt.ElapsedGameTime.TotalSeconds;
+                if (currtime > time)
+                {
+                    currtime = 0;
+                    return targ;
+                }
+            }
             foreach (UIControl control in ctrls)
             {
                 string tmp = control.Update(m, gt);
