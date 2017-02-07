@@ -241,9 +241,11 @@ namespace UIStuff
     {
         KeyboardState oldstate;
         bool? sel;
-        public UITextBox(Positioning p, Origin o, Alignment al, Point pos, Size size, Texture2D img, string txt, SpriteFont font, Color col, TAlign ta, bool select)
+        int maxc;
+        public UITextBox(Positioning p, Origin o, Alignment al, Point pos, Size size, Texture2D img, string txt, SpriteFont font, Color col, TAlign ta, bool select, int maxchar)
             : base(p, o, al, pos, size, img, txt, font, col, ta)
         {
+            maxc = maxchar;
             oldstate = Keyboard.GetState();
             if (select)
             {
@@ -257,107 +259,118 @@ namespace UIStuff
         public override string Update(MouseState m, GameTime gt)
         {
             KeyboardState currstate = Keyboard.GetState();
-            if (m.LeftButton == ButtonState.Pressed)
+            if (sel != null)
             {
-                if (m.X > calcuedpos.x && m.X < (calcuedpos.x + calcuedsize.width) && m.Y > calcuedpos.y && m.Y < (calcuedpos.y + calcuedsize.height))
+                if (m.LeftButton == ButtonState.Pressed)
                 {
-                    sel = true;
-                }
-                else
-                {
-                    sel = false;
+                    if (m.X > calcuedpos.x && m.X < (calcuedpos.x + calcuedsize.width) && m.Y > calcuedpos.y && m.Y < (calcuedpos.y + calcuedsize.height))
+                    {
+                        sel = true;
+                    }
+                    else
+                    {
+                        sel = false;
+                    }
                 }
             }
-            if (sel == null || sel == true)
+            if ((maxc != 0) && (text.t.Length <= maxc))
             {
-                if (currstate != oldstate)
+                if (sel == null || sel == true)
                 {
-                    if (currstate.GetPressedKeys().Length > 0)
+                    if (currstate != oldstate)
                     {
-                        if (currstate.GetPressedKeys()[0].ToString() == Keys.Back.ToString())
+                        if (currstate.GetPressedKeys().Length > 0)
                         {
-                            if (text.t.Length > 0)
-                                text.Changetext(text.t.Remove(text.t.Length - 1));
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.OemPeriod.ToString())
-                        {
-                            text.Changetext(text.t + ".");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.Enter.ToString()
-                            || currstate.GetPressedKeys()[0].ToString() == Keys.LeftControl.ToString()
-                            || currstate.GetPressedKeys()[0].ToString() == Keys.RightControl.ToString()
-                            || currstate.GetPressedKeys()[0].ToString() == Keys.RightAlt.ToString()
-                            || currstate.GetPressedKeys()[0].ToString() == Keys.LeftAlt.ToString())
-                        {
-                            //Nothing
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.Space.ToString())
-                        {
-                            text.Changetext(text.t + " ");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.OemComma.ToString())
-                        {
-                            text.Changetext(text.t + ",");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.OemMinus.ToString())
-                        {
-                            text.Changetext(text.t + "-");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.OemPlus.ToString())
-                        {
-                            text.Changetext(text.t + "+");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.OemQuestion.ToString())
-                        {
-                            text.Changetext(text.t + "/");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.D0.ToString())
-                        {
-                            text.Changetext(text.t + "0");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.D1.ToString())
-                        {
-                            text.Changetext(text.t + "1");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.D2.ToString())
-                        {
-                            text.Changetext(text.t + "2");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.D3.ToString())
-                        {
-                            text.Changetext(text.t + "3");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.D4.ToString())
-                        {
-                            text.Changetext(text.t + "4");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.D5.ToString())
-                        {
-                            text.Changetext(text.t + "5");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.D6.ToString())
-                        {
-                            text.Changetext(text.t + "6");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.D7.ToString())
-                        {
-                            text.Changetext(text.t + "7");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.D8.ToString())
-                        {
-                            text.Changetext(text.t + "8");
-                        }
-                        else if (currstate.GetPressedKeys()[0].ToString() == Keys.D9.ToString())
-                        {
-                            text.Changetext(text.t + "9");
-                        }
-                        else
-                        {
-                            if (currstate.GetPressedKeys().Length > 1)
+                            if (currstate.GetPressedKeys()[0].ToString() == Keys.Back.ToString())
                             {
-                                if (currstate.GetPressedKeys()[1].ToString() == Keys.LeftShift.ToString() || currstate.GetPressedKeys()[1].ToString() == Keys.RightShift.ToString())
+                                if (text.t.Length > 0)
+                                    text.Changetext(text.t.Remove(text.t.Length - 1));
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.OemPeriod.ToString())
+                            {
+                                text.Changetext(text.t + ".");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.Enter.ToString()
+                                || currstate.GetPressedKeys()[0].ToString() == Keys.LeftControl.ToString()
+                                || currstate.GetPressedKeys()[0].ToString() == Keys.RightControl.ToString()
+                                || currstate.GetPressedKeys()[0].ToString() == Keys.RightAlt.ToString()
+                                || currstate.GetPressedKeys()[0].ToString() == Keys.LeftAlt.ToString())
+                            {
+                                //Nothing
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.Space.ToString())
+                            {
+                                text.Changetext(text.t + " ");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.OemComma.ToString())
+                            {
+                                text.Changetext(text.t + ",");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.OemMinus.ToString())
+                            {
+                                text.Changetext(text.t + "-");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.OemPlus.ToString())
+                            {
+                                text.Changetext(text.t + "+");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.OemQuestion.ToString())
+                            {
+                                text.Changetext(text.t + "/");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.D0.ToString())
+                            {
+                                text.Changetext(text.t + "0");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.D1.ToString())
+                            {
+                                text.Changetext(text.t + "1");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.D2.ToString())
+                            {
+                                text.Changetext(text.t + "2");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.D3.ToString())
+                            {
+                                text.Changetext(text.t + "3");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.D4.ToString())
+                            {
+                                text.Changetext(text.t + "4");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.D5.ToString())
+                            {
+                                text.Changetext(text.t + "5");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.D6.ToString())
+                            {
+                                text.Changetext(text.t + "6");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.D7.ToString())
+                            {
+                                text.Changetext(text.t + "7");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.D8.ToString())
+                            {
+                                text.Changetext(text.t + "8");
+                            }
+                            else if (currstate.GetPressedKeys()[0].ToString() == Keys.D9.ToString())
+                            {
+                                text.Changetext(text.t + "9");
+                            }
+                            else
+                            {
+                                if (currstate.GetPressedKeys().Length > 1)
                                 {
-                                    text.Changetext(text.t + currstate.GetPressedKeys()[0].ToString().ToUpper());
+                                    if (currstate.GetPressedKeys()[1].ToString() == Keys.LeftShift.ToString() || currstate.GetPressedKeys()[1].ToString() == Keys.RightShift.ToString())
+                                    {
+                                        text.Changetext(text.t + currstate.GetPressedKeys()[0].ToString().ToUpper());
+                                    }
+                                    else
+                                    {
+                                        if (currstate.GetPressedKeys()[0].ToString() != Keys.LeftShift.ToString() && currstate.GetPressedKeys()[0].ToString() != Keys.RightShift.ToString())
+                                            text.Changetext(text.t + currstate.GetPressedKeys()[0].ToString().ToLower());
+                                    }
                                 }
                                 else
                                 {
@@ -365,16 +378,11 @@ namespace UIStuff
                                         text.Changetext(text.t + currstate.GetPressedKeys()[0].ToString().ToLower());
                                 }
                             }
-                            else
-                            {
-                                if (currstate.GetPressedKeys()[0].ToString() != Keys.LeftShift.ToString() && currstate.GetPressedKeys()[0].ToString() != Keys.RightShift.ToString())
-                                    text.Changetext(text.t + currstate.GetPressedKeys()[0].ToString().ToLower());
-                            }
                         }
-                    }
-                    if (text.t.ToLower() == "localhost")
-                    {
-                        text.Changetext("127.0.0.1");
+                        if (text.t.ToLower() == "localhost")
+                        {
+                            text.Changetext("127.0.0.1");
+                        }
                     }
                 }
             }

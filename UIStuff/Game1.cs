@@ -52,7 +52,7 @@ namespace UIStuff
             sb = new SpriteBatch(GraphicsDevice);
             //Adds a base which contains one control, an image.
             controller.Add(
-                new UIBase("splash", UIBase.Type.over, UIBase.Overlaytype.Menu, false, 3, "menu",
+                new UIBase("splash", UIBase.Type.over, "menu", false, 3, "menu",
                     new UIImage(
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
@@ -89,7 +89,7 @@ namespace UIStuff
                 )
             ); 
             controller.Add(
-                 new UIBase("buttontarg", UIBase.Type.over, UIBase.Overlaytype.Menu, true, 0, null,
+                 new UIBase("buttontarg", UIBase.Type.over, "menu", true, 0, null,
                      new UIImage(
                          UIControl.Positioning.Relative,
                          UIControl.Origin.TopLeft,
@@ -143,7 +143,7 @@ namespace UIStuff
                  )
              );
             controller.Add(
-                new UIBase("menu", UIBase.Type.over, UIBase.Overlaytype.Menu, true, 0, null,
+                new UIBase("menu", UIBase.Type.over, "menu", true, 0, null,
                     new UIImage(
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
@@ -212,12 +212,13 @@ namespace UIStuff
                         Content.Load<SpriteFont>("testfont"),
                         Color.Black,
                         UIBGText.TAlign.Left,
-                        true
+                        true,
+                        6
                     )
                 )
             );
             controller.Add(
-                new UIBase("cine", UIBase.Type.over, UIBase.Overlaytype.Menu, false, 5, "none",
+                new UIBase("cine", UIBase.Type.over, "menu", false, 5, "none",
                     new UIImage(
                         UIControl.Positioning.Relative,
                         UIControl.Origin.TopLeft,
@@ -252,7 +253,66 @@ namespace UIStuff
                     )
                 )
             );
+            controller.Add(
+                 new UIBase("pausetarg", UIBase.Type.over, "pause", true, 0, null,
+                     new UIImage(
+                         UIControl.Positioning.Relative,
+                         UIControl.Origin.TopLeft,
+                         UIControl.Alignment.TopLeft,
+                         Point.Zero,
+                         new Size(100, 100),
+                         Content.Load<Texture2D>("testimg")
+                     ),
+                     new UIText(
+                         UIControl.Positioning.Relative,
+                         UIControl.Origin.TopCenter,
+                         UIControl.Alignment.MiddleCenter,
+                         new Point(0, 10),
+                         "Pause targ.",
+                         Content.Load<SpriteFont>("testfont"),
+                         Color.Blue
+                     ),
+                    new UIButton(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.BottomCenter,
+                        UIControl.Alignment.BottomCenter,
+                        new Point(0, -10),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.Green),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.Red),
+                        "none",
+                        true,
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                    ),
+                    new UIButton(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.TopCenter,
+                        UIControl.Alignment.TopCenter,
+                        new Point(0, 40),
+                        new ButtonData(controller.GetColor(Color.Peru), "Red", Content.Load<SpriteFont>("testfont"), Color.Green),
+                        new ButtonData(controller.GetColor(Color.Purple), "Red", Content.Load<SpriteFont>("testfont"), Color.Red),
+                        "redswitch",
+                        true,
+                        new ButtonData(controller.GetColor(Color.LemonChiffon), "Red", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                    ),
+                    new UIButton(
+                        UIControl.Positioning.Relative,
+                        UIControl.Origin.BottomCenter,
+                        UIControl.Alignment.BottomCenter,
+                        new Point(0, -5),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.Green),
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.Red),
+                        "exit",
+                        true,
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                    )
+                 )
+             );
+            controller.Add(
+                new UIBase("redswitch", UIBase.Type.over, "red", false, 0, null
+                )
+            );
             controller.Switchto("splash");
+            ostate = Keyboard.GetState();
         }
 
         /// <summary>
@@ -263,6 +323,8 @@ namespace UIStuff
         {
 
         }
+
+        KeyboardState ostate;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -270,26 +332,46 @@ namespace UIStuff
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
 
-            UIBase.Overlaytype olt = controller.Update(gameTime);
-            if (olt == UIBase.Overlaytype.Game || olt == UIBase.Overlaytype.Running)
+            string olt = controller.Update(gameTime);
+            if (olt == "game")
             {
-                //Pausing Code
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || (Keyboard.GetState().IsKeyDown(Keys.Escape) && ostate.IsKeyUp(Keys.Escape)))
+                    controller.Switchto("pausetarg");
+                //Game code
             }
-            //Non-Pausing Code
+            else if (olt == "pause")
+            {
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || (Keyboard.GetState().IsKeyDown(Keys.Escape) && ostate.IsKeyUp(Keys.Escape)))
+                    controller.Switchto("none");
+                //Pause code
+            }
+            if (olt == "red")
+            {
+                redbg = true;
+                controller.Switchto("pausetarg");
+            }
+            ostate = Keyboard.GetState();
+            //All code
 
             base.Update(gameTime);
         }
 
+        bool redbg = false;
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            if (redbg)
+            {
+                GraphicsDevice.Clear(Color.PaleVioletRed);
+            }
+            else
+            {
+                GraphicsDevice.Clear(Color.CornflowerBlue);
+            }
 
             sb.Begin();
             controller.Draw(sb);

@@ -29,7 +29,7 @@ namespace UIStuff
                 new UIBase(
                     "none",
                     UIBase.Type.over,
-                    UIBase.Overlaytype.Game,
+                    "game",
                     mig,
                     0,
                     null
@@ -39,7 +39,7 @@ namespace UIStuff
                 new UIBase(
                     "exit",
                     UIBase.Type.over,
-                    UIBase.Overlaytype.Game,
+                    "game",
                     mig,
                     0,
                     null
@@ -81,7 +81,7 @@ namespace UIStuff
             tex.SetData(data);
             return tex;
         }
-        public UIBase.Overlaytype Update(GameTime gt)
+        public string Update(GameTime gt)
         {
             if (Updating)
             {
@@ -100,12 +100,12 @@ namespace UIStuff
             }
             return list[current].overlay;
         }
-        public UIBase.Overlaytype Update(GameTime gt, bool mouseingame)
+        public string Update(GameTime gt, bool mouseingame)
         {
             mig = mouseingame;
             return Update(gt);
         }
-        public UIBase.Overlaytype Draw(SpriteBatch sb)
+        public string Draw(SpriteBatch sb)
         {
             if (Drawing)
             {
@@ -149,7 +149,7 @@ namespace UIStuff
     {
         public string name { get; private set; }
         List<UIControl> ctrls;
-        public Overlaytype overlay { get; private set; }
+        public string overlay { get; private set; }
         public bool sm { get; set; }
         float time;
         double currtime;
@@ -158,13 +158,8 @@ namespace UIStuff
         {
             over, partial, world
         }
-        //Replace with string or int?
-        public enum Overlaytype
-        {
-            Menu, Game, Paused, Running
-        }
         private Type t;
-        public UIBase(string _name, Type _t, Overlaytype _overlay, bool showmouse, float secondstochange, string timetarget, params UIControl[] controls)
+        public UIBase(string _name, Type _t, string _overlay, bool showmouse, float secondstochange, string timetarget, params UIControl[] controls)
         {
             name = _name;
             overlay = _overlay;
