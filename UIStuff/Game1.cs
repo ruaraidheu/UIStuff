@@ -142,6 +142,7 @@ namespace UIStuff
                     )
                  )
              );
+            tb1 = new UIVar<string>();
             controller.Add(
                 new UIBase("menu", UIBase.Type.over, "menu", true, 0, null,
                     new UIImage(
@@ -213,7 +214,8 @@ namespace UIStuff
                         Color.Black,
                         UIBGText.TAlign.Left,
                         true,
-                        6
+                        6,
+                        tb1
                     )
                 )
             );
@@ -314,7 +316,7 @@ namespace UIStuff
             controller.Switchto("splash");
             ostate = Keyboard.GetState();
         }
-
+        UIVar<string> tb1;
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
@@ -353,7 +355,11 @@ namespace UIStuff
             }
             ostate = Keyboard.GetState();
             //All code
-
+            if (tb1.Value == "cooL")
+            {
+                tb1.Value = "";
+                controller.Switchto("splash");
+            }
             base.Update(gameTime);
         }
 

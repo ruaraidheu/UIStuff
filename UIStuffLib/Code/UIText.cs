@@ -242,7 +242,8 @@ namespace UIStuff
         KeyboardState oldstate;
         bool? sel;
         int maxc;
-        public UITextBox(Positioning p, Origin o, Alignment al, Point pos, Size size, Texture2D img, string txt, SpriteFont font, Color col, TAlign ta, bool select, int maxchar)
+        UIVar<string> val;
+        public UITextBox(Positioning p, Origin o, Alignment al, Point pos, Size size, Texture2D img, string txt, SpriteFont font, Color col, TAlign ta, bool select, int maxchar, UIVar<string> _val)
             : base(p, o, al, pos, size, img, txt, font, col, ta)
         {
             maxc = maxchar;
@@ -255,10 +256,13 @@ namespace UIStuff
             {
                 sel = null;
             }
+            val = _val;
+            val.Value = text.t;
         }
         public override string Update(MouseState m, GameTime gt)
         {
             KeyboardState currstate = Keyboard.GetState();
+            text.Changetext(val.Value);
             if (sel != null)
             {
                 if (m.LeftButton == ButtonState.Pressed)
@@ -273,7 +277,7 @@ namespace UIStuff
                     }
                 }
             }
-            if ((maxc != 0) && (text.t.Length <= maxc))
+            if ((maxc == 0) || (text.t.Length <= maxc))
             {
                 if (sel == null || sel == true)
                 {
@@ -386,6 +390,12 @@ namespace UIStuff
                     }
                 }
             }
+            else if (currstate.GetPressedKeys().Length > 0 && currstate.GetPressedKeys()[0].ToString() == Keys.Back.ToString())
+            {
+                if (text.t.Length > 0)
+                    text.Changetext(text.t.Remove(text.t.Length - 1));
+            }
+            val.Value = text.t;
             oldstate = currstate;
             return base.Update(m, gt);
         }
