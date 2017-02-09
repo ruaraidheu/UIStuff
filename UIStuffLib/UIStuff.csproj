@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\UIAV.cs" />
     <Compile Include="Code\UIController.cs" />
     <Compile Include="Code\UIText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

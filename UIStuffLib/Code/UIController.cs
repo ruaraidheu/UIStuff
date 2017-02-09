@@ -205,6 +205,14 @@ namespace UIStuff
     public class UIVar<T>
     {
         public T Value { get; set; }
+        public UIVar()
+        {
+
+        }
+        public UIVar(T val)
+        {
+            Value = val;
+        }
     }
     public class UIGVar<T>
     {
