@@ -206,6 +206,10 @@ namespace UIStuff
     {
         public T Value { get; set; }
     }
+    public class UIGVar<T>
+    {
+        public T Value { get; internal set; }
+    }
     public class UIControl
     {
         protected Point pos;

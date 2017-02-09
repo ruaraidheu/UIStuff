@@ -116,7 +116,8 @@ namespace UIStuff
                         new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.Red),
                         "none",
                         true,
-                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod),
+                        new UIGVar<bool>()
                     ),
                     new UIButton(
                         UIControl.Positioning.Relative,
@@ -127,7 +128,8 @@ namespace UIStuff
                         new ButtonData(controller.GetColor(Color.Purple), "Cinematic", Content.Load<SpriteFont>("testfont"), Color.Red),
                         "cine",
                         true,
-                        new ButtonData(controller.GetColor(Color.LemonChiffon), "Cinematic", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                        new ButtonData(controller.GetColor(Color.LemonChiffon), "Cinematic", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod),
+                        new UIGVar<bool>()
                     ),
                     new UIButton(
                         UIControl.Positioning.Relative,
@@ -138,7 +140,8 @@ namespace UIStuff
                         new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.Red),
                         "exit",
                         true,
-                        new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod),
+                        new UIGVar<bool>()
                     )
                  )
              );
@@ -200,7 +203,8 @@ namespace UIStuff
                         new ButtonData(Content.Load<Texture2D>("testimg"), "Button_hov", Content.Load<SpriteFont>("testfont"), Color.Red),
                         "buttontarg",
                         false,
-                        ButtonData.Empty
+                        ButtonData.Empty,
+                        new UIGVar<bool>()
                     ),
                     new UITextBox(
                         UIControl.Positioning.Absolute,
@@ -283,7 +287,8 @@ namespace UIStuff
                         new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.Red),
                         "none",
                         true,
-                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Play", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod),
+                        new UIGVar<bool>()
                     ),
                     new UIButton(
                         UIControl.Positioning.Relative,
@@ -294,7 +299,8 @@ namespace UIStuff
                         new ButtonData(controller.GetColor(Color.Purple), "Red", Content.Load<SpriteFont>("testfont"), Color.Red),
                         "redswitch",
                         true,
-                        new ButtonData(controller.GetColor(Color.LemonChiffon), "Red", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                        new ButtonData(controller.GetColor(Color.LemonChiffon), "Red", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod),
+                        new UIGVar<bool>()
                     ),
                     new UIButton(
                         UIControl.Positioning.Relative,
@@ -305,7 +311,8 @@ namespace UIStuff
                         new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.Red),
                         "exit",
                         true,
-                        new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod)
+                        new ButtonData(Content.Load<Texture2D>("testimg"), "Exit", Content.Load<SpriteFont>("testfont"), Color.PaleGoldenrod),
+                        new UIGVar<bool>()
                     )
                  )
              );

@@ -156,6 +156,7 @@ namespace UIStuff
         ButtonData stand;
         ButtonData hover;
         ButtonData click;
+        UIGVar<bool> oclick;
         enum ButtonCurr
         {
             Standard, Hover, Click
@@ -174,13 +175,14 @@ namespace UIStuff
         /// <param name="hover"></param>
         /// <param name="activateonrelease"></param>
         /// <param name="click">Use ButtonData.Empty if not using activate on release.</param>
-        public UIButton(Positioning p, Origin o, Alignment al, Point pos, ButtonData standard, ButtonData _hover, string target, bool activateonrelease, ButtonData _click, float margin = 0)
+        public UIButton(Positioning p, Origin o, Alignment al, Point pos, ButtonData standard, ButtonData _hover, string target, bool activateonrelease, ButtonData _click, UIGVar<bool> _oclick, float margin = 0)
             : base(p, o, al, pos, standard.t, standard.s, standard.f, standard.c, margin)
         {
             targ = target;
             stand = standard;
             hover = _hover;
             click = _click;
+            oclick = _oclick;
             if (activateonrelease && (click.t == null || click.s == null || click.s == String.Empty || click.f == null))
             {
                 Console.WriteLine("You need to assign a click state to use activateonrelease.");
@@ -205,6 +207,7 @@ namespace UIStuff
                             bc = ButtonCurr.Click;
                             Changetext(click.s, click.c, click.f);
                             ChangeImage(click.t);
+                            oclick.Value = true;
                         }
                     }
                     else
@@ -221,6 +224,7 @@ namespace UIStuff
                     bc = ButtonCurr.Hover;
                     Changetext(hover.s, hover.c, hover.f);
                     ChangeImage(hover.t);
+                    oclick.Value = false;
                 }
             }
             else if (bc != ButtonCurr.Standard)
@@ -228,6 +232,7 @@ namespace UIStuff
                 bc = ButtonCurr.Standard;
                 Changetext(stand.s, stand.c, stand.f);
                 ChangeImage(stand.t);
+                oclick.Value = false;
             }
             lastupdate = m.LeftButton;
             return null;
