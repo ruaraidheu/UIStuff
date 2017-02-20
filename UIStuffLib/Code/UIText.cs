@@ -388,10 +388,6 @@ namespace UIStuff
                                 }
                             }
                         }
-                        if (text.t.ToLower() == "localhost")
-                        {
-                            text.Changetext("127.0.0.1");
-                        }
                     }
                 }
             }
@@ -403,6 +399,21 @@ namespace UIStuff
             val.Value = text.t;
             oldstate = currstate;
             return base.Update(m, gt);
+        }
+        public class UIDynamicText : UIBGText
+        {
+            UIVar<string> val;
+            public UIDynamicText(Positioning p, Origin o, Alignment al, Point pos, Size size, Texture2D img, string txt, SpriteFont font, Color col, TAlign ta, UIVar<string> _val)
+                : base(p, o, al, pos, size, img, txt, font, col, ta)
+            {
+                val = _val;
+                val.Value = text.t;
+            }
+            public override string Update(MouseState m, GameTime gt)
+            {
+                text.Changetext(val.Value);
+                return base.Update(m, gt);
+            }
         }
     }
 }

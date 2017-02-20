@@ -367,6 +367,10 @@ namespace UIStuff
                 tb1.Value = "";
                 controller.Switchto("splash");
             }
+            if (tb1.Value == "localhost")
+            {
+                tb1.Value = "127.0.0.1";
+            }
             base.Update(gameTime);
         }
 
