@@ -117,6 +117,18 @@ namespace UIStuff
             }
             return list[current].overlay;
         }
+        public string Draw(SpriteBatch sb, Viewport v)
+        {
+            if (Drawing)
+            {
+                list[current].Draw(sb, v);
+            }
+            else
+            {
+                game.IsMouseVisible = mig;
+            }
+            return list[current].overlay;
+        }
         public void Switchto(string s)
         {
             int i = 0;
